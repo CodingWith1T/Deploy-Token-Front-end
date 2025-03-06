@@ -24,6 +24,9 @@ export default function Navbar() {
             <Link className="nav-link topbtn nav-link text-gray-600 hover:text-blue-600" href="/create-token/ethereum">Create Token</Link>
           </li>
           <li className="nav-item">
+            <Link className="nav-link topbtn nav-link text-gray-600 hover:text-blue-600" href="/airdrop">Airdrop</Link>
+          </li>
+          <li className="nav-item">
             <Link target='_blank' className="nav-link topbtn nav-link text-gray-600 hover:text-blue-600" href="https://blog.deploytokens.com/token-creation-fees/">Fees</Link>
           </li>
           <li className="nav-item">

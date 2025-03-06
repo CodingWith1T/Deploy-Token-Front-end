@@ -4,10 +4,9 @@ import '@rainbow-me/rainbowkit/styles.css';
 import Navbar from "@/Componests/Navbar/Navbar";
 import Footer from "@/Componests/Footer/Footer";
 
-
 export const metadata = {
-  title: "Token Maker – Create Your Own Crypto Token in Minutes | DeployTokens",
-  description: "Create your own crypto token instantly with DeployTokens, the easiest Token Maker for ERC20, BEP20, and more. No coding required – launch in minutes!",
+  title: "Instant Token Maker on Your Favorite Chain | DeployTokens",
+  description: "Why wait? Create and launch your token instantly on any blockchain- no coding, fast, secure, and effortless. Instant launch choose, customize.",
   twitterImage: "https://deploytokens.com/assets/images/sliderimg.png" 
 
 };

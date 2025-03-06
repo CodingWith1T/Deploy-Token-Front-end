@@ -153,74 +153,127 @@ export default function Page() {
             console.log('Error:', error);
         }
     };
-    console.log(depositHash)
 
     return (
-        <div>
-            <h1>Disperse Tokens or Ether</h1>
+        <div className="airdroppage">
+            <div className="container">
+                <h1>Your Proven Airdrop and Token Distribution Tool</h1>
+                <div className="row">
+                    <div className="col-md-4">
+                        <div className="ardbox">
+                            <h2>7,305</h2>
+                            <p>Projects launched with Token Tool</p>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="ardbox">
+                            <h2>50,000</h2>
+                            <p>Maximum number of airdrop recipients</p>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="ardbox">
+                            <h2>13,000+</h2>
+                            <p>Community members</p>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="ardbox">
+                            <h2>Use the most advanced airdrop tool</h2>
+                            <ul>
+                                <li>⦿ Save time by auto filling recipients</li>
+                                <li>⦿ Minimize gas fees</li>
+                                <li>⦿ Send any ERC20 token </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="ardbox">
+                            <h2>Airdrop tokens in order to</h2>
+                            <ul>
+                                <li>⦿ Reward your community</li>
+                                <li>⦿ Distribute tokens to investors</li>
+                                <li>⦿ Make dividend or coupon payments</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
+
+
+                <div className="dispersesec">
+
+
+                    <h3>Disperse Tokens</h3>
+                    <div className="airdropform">
+                        <div className="row">
+                            {/* 
             <div>
                 <label>Send Ether?</label>
                 <input type="checkbox" checked={sendEther} onChange={handleSendEtherToggle} />
-            </div>
+            </div> */}
 
-            {!sendEther && (
-                <>
-                    <div>
-                        <label>Token Address:</label>
-                        <input
-                            type="  text"
-                            value={tokenAddress}
-                            onChange={(e) => setTokenAddress(e.target.value)}
-                            placeholder="Enter ERC-20 token address"
-                        />
+                            {!sendEther && (
+                                <>
+
+                                    <div className="col-md-6">
+                                        <label>Token Address:</label>
+                                        <input
+                                            type="  text"
+                                            value={tokenAddress}
+                                            onChange={(e) => setTokenAddress(e.target.value)}
+                                            placeholder="Enter ERC-20 token address"
+                                        />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <label>Deposit Amount (Ether or Token Value):</label>
+                                        <input
+                                            type="text"
+                                            value={depositAmount}
+                                            onChange={(e) => setDepositAmount(e.target.value)}
+                                            placeholder="Enter Ether or Token amount"
+                                        />
+                                    </div>
+                                </>
+                            )}
+
+                            <div className="col-md-6">
+                                <label>Recipients (comma-separated addresses):</label>
+                                <input
+                                    type="text"
+                                    value={recipientsInput}
+                                    onChange={(e) => setRecipientsInput(e.target.value)}
+                                    placeholder="Enter Ethereum addresses separated by commas"
+                                />
+                            </div>
+
+                            <div className="col-md-6">
+                                <label>Values (comma-separated values for each recipient):</label>
+                                <input
+                                    type="text"
+                                    value={recipientValues}
+                                    onChange={handleRecipientValuesChange}
+                                    placeholder="Enter the value for each recipient, separated by commas"
+                                />
+                            </div>
+
+                            <button onClick={handleDeposit} disabled={isPending}>
+                                {isPending ? 'Processing...' : 'Deposit'}
+                            </button>
+
+                            {depositHash && (
+                                <div className="col-md-6">
+                                    <p>Transaction Hash:</p>
+                                    <a href={`https://etherscan.io/tx/${depositHash}`} target="_blank" rel="noopener noreferrer">
+                                        {depositHash}
+                                    </a>
+                                </div>
+
+                            )}
+                        </div>
                     </div>
-                    <div>
-                        <label>Deposit Amount (Ether or Token Value):</label>
-                        <input
-                            type="text"
-                            value={depositAmount}
-                            onChange={(e) => setDepositAmount(e.target.value)}
-                            placeholder="Enter Ether or Token amount"
-                        />
-                    </div>
-                </>
-            )}
-
-
-
-            <div>
-                <label>Recipients (comma-separated addresses):</label>
-                <input
-                    type="text"
-                    value={recipientsInput}
-                    onChange={(e) => setRecipientsInput(e.target.value)}
-                    placeholder="Enter Ethereum addresses separated by commas"
-                />
-            </div>
-
-            <div>
-                <label>Values (comma-separated values for each recipient):</label>
-                <input
-                    type="text"
-                    value={recipientValues}
-                    onChange={handleRecipientValuesChange}
-                    placeholder="Enter the value for each recipient, separated by commas"
-                />
-            </div>
-
-            <button onClick={handleDeposit} disabled={isPending}>
-                {isPending ? 'Processing...' : 'Deposit'}
-            </button>
-
-            {depositHash && (
-                <div>
-                    <p>Transaction Hash:</p>
-                    <a href={`https://etherscan.io/tx/${depositHash}`} target="_blank" rel="noopener noreferrer">
-                        {depositHash}
-                    </a>
                 </div>
-            )}
+            </div>
         </div>
     );
 }
