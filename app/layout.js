@@ -32,6 +32,34 @@ export default function RootLayout({ children }) {
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={metadata.twitterImage} />
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "DeployTokens",
+            "alternateName": ["Deploy Tokens", "DeployTokens.com", "Crypto Token Creator", "Token Maker", "Token Creator", "No-code Token Builder", "Token Generator"],
+            "url": "https://deploytokens.com/",
+            "logo": "https://deploytokens.com/logo.png",
+            "description": "DeployTokens is a powerful token maker platform that allows anyone to create and launch blockchain tokens instantly without any coding required. Create erc20 token, bep20 token, base, polygon, and arbitrum. Launch your token instantly and grow your project effectively",
+            "foundingDate": "2024",
+            "inLanguage": "en-US",
+            "sameAs": [
+              "https://twitter.com/deploytokens",
+              "https://linkedin.com/company/deploytokens",
+              "https://github.com/deploytokens"
+            ],
+            "contactPoint": [
+              {
+                "@type": "ContactPoint",
+                "email": "info@deploytokens.com",
+                "contactType": ["general inquiries", "customer service"],
+                "availableLanguage": "en"
+              }
+            ]
+          }
+          `}
+        </script>
       </head>
       <body>
         <Providers>

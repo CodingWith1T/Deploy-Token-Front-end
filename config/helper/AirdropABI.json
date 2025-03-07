@@ -3,6 +3,10 @@
 		"constant": false,
 		"inputs": [
 			{
+				"name": "token",
+				"type": "address"
+			},
+			{
 				"name": "recipients",
 				"type": "address[]"
 			},
@@ -11,10 +15,66 @@
 				"type": "uint256[]"
 			}
 		],
-		"name": "disperseEther",
+		"name": "disperseTokenSimple",
 		"outputs": [],
 		"payable": true,
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "viewFee",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_newFee",
+				"type": "uint256"
+			}
+		],
+		"name": "updateFee",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "feeReceiver",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_newReceiver",
+				"type": "address"
+			}
+		],
+		"name": "updateFeeReceiver",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -35,17 +95,27 @@
 		],
 		"name": "disperseToken",
 		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fee",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"constant": false,
 		"inputs": [
-			{
-				"name": "token",
-				"type": "address"
-			},
 			{
 				"name": "recipients",
 				"type": "address[]"
@@ -55,10 +125,49 @@
 				"type": "uint256[]"
 			}
 		],
-		"name": "disperseTokenSimple",
+		"name": "disperseEther",
 		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_fee",
+				"type": "uint256"
+			},
+			{
+				"name": "_feeReceiver",
+				"type": "address"
+			}
+		],
 		"payable": false,
 		"stateMutability": "nonpayable",
-		"type": "function"
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "newFee",
+				"type": "uint256"
+			}
+		],
+		"name": "FeeUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "newReceiver",
+				"type": "address"
+			}
+		],
+		"name": "FeeReceiverUpdated",
+		"type": "event"
 	}
 ]
