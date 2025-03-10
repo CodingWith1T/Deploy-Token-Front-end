@@ -13033,3 +13033,6 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
 .Apart h3{margin-bottom: 30px;}
 .WhyChoose{ height:auto;}
 }
+
+.expand{flex-grow:1}
+.bar{flex-grow:1;margin:auto .3em;border-bottom:1px rgba(0,0,0,1) solid}

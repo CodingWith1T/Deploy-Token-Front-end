@@ -27,24 +27,24 @@ export default function Page() {
 
     const handleRecipientsInputChange = (e) => {
         setRecipientsInput(e.target.value);
-        
+
         // Parse recipients and values from input
         const entries = e.target.value.split('\n').map(entry => entry.trim()).filter(Boolean);
-      
+
         const recipients = [];
         const values = [];
-    
+
         let isValid = true;
-    
+
         entries.forEach(entry => {
             const [address, value] = entry.split(',').map(item => item.trim());
 
             if (isNaN(value) || parseFloat(value) <= 0) {
                 isValid = false;
             }
-    
+
             // Push to recipients and values if valid
-            if (address && value  && !isNaN(value)) {
+            if (address && value && !isNaN(value)) {
                 recipients.push(address);
                 values.push(value);
             }
@@ -58,8 +58,8 @@ export default function Page() {
             setError('Invalid address or value format. Ensure each entry is "address,value".');
         }
     };
-    
-    
+
+
 
     const handleSendEtherToggle = () => {
         setSendEther(!sendEther);
@@ -71,46 +71,46 @@ export default function Page() {
             alert('Please connect your wallet and ensure it is on the correct network.');
             return;
         }
-    
+
         // Parse recipients and values from the input
         const recipients = recipientsInput.split('\n').map(entry => entry.trim()).filter(Boolean);
         const recipients1 = recipients.map(entry => entry.split(',')[0].trim()).filter(Boolean);
 
         let values = recipientValues;
-    
+
         // Check if recipientValues is an array (if it is, join into a string)
         if (Array.isArray(values)) {
             values = values.join('\n');
         }
-    
+
         // Now, we can safely use split() on values
         values = values.split('\n').map(value => value.trim()).filter(Boolean);
-    
+
         // Validate that recipients and values arrays have the same length
         if (recipients.length === 0 || values.length === 0 || recipients.length !== values.length) {
             alert('Please ensure recipients and values are provided correctly.');
             return;
         }
-    
+
         // Parse the values (token amounts) into appropriate units
         const parsedValues = values.map(value => {
             const parsed = parseUnits(value, 18); // Assuming 18 decimals for ERC-20 tokens
             if (parsed === undefined) {
                 return null; // Invalid value
             }
-            return parsed;
-        }).filter(Boolean); // Remove any invalid values
-    
+            return parsed.toString();  // Convert BigInt to string
+        }).filter(Boolean);// Remove any invalid values
+
         if (parsedValues.length === 0) {
             alert('Invalid value provided. Ensure each value is a valid number.');
             return;
         }
-    
+
         try {
             if (!address) {
                 await connectAsync();
             }
-    
+
             // Contract details
             const contract = {
                 address: "0xA4b66c2CdB424611119760113bd4926029185d16",
@@ -123,14 +123,14 @@ export default function Page() {
                     alert('Please enter a valid deposit amount');
                     return;
                 }
-    
+
                 // Sending Ether
                 const etherValues = parsedValues.map(value => value.toString());
                 const data = await writeContractAsync({
                     ...contract,
                     functionName: 'disperseEther',
                     args: [recipients1, etherValues], // Pass recipients and ether values
-                    value: etherValues, // Total Ether to send in Wei
+                    value: etherValues.reduce((acc, curr) => acc + BigInt(curr), BigInt(0)), // Total Ether to send in Wei
                 });
                 setDepositHash(data.hash);
             } else {
@@ -139,25 +139,25 @@ export default function Page() {
                     alert('Please enter a valid ERC-20 token address.');
                     return;
                 }
-    
+
                 // Fetch token decimals (using read contract method)
                 const tokenContract = {
                     address: tokenAddress,
                     abi: erc20Abi,
                 };
-    
+
                 let decimals = await readContract(config, {
                     ...tokenContract,
                     functionName: 'decimals',
                     chainId: chain?.id
                 });
-    
+
                 // Check if decimals is valid
                 if (decimals === undefined) {
                     alert('Failed to fetch token decimals.');
                     return;
                 }
-                
+
                 // Ensure the deposit amount is a valid number and within limits
                 const parsedTokenAmount = parseFloat(depositAmount);
                 if (isNaN(parsedTokenAmount) || parsedTokenAmount <= 0) {
@@ -171,7 +171,7 @@ export default function Page() {
                     functionName: 'approve',
                     args: [contract.address, parseUnits(depositAmount, decimals)],
                 });
-    
+
                 // Sending ERC-20 tokens after approval
                 const tokenValues = parsedValues.map(value => value.toString());
 
@@ -179,7 +179,7 @@ export default function Page() {
                     ...contract,
                     functionName: 'disperseTokenSimple',
                     args: [tokenAddress, recipients1, tokenValues], // Correctly passing array of recipients and values
-                    value: tokenValues.length*500000000000000,
+                    value: BigInt(tokenValues.length) * 500000000000000n,
                 });
                 setDepositHash(data.hash);
             }
@@ -189,7 +189,7 @@ export default function Page() {
             console.log('Error:', error);
         }
     };
-    
+
     return (
         <div className="airdroppage">
             <div className="container">
@@ -281,17 +281,19 @@ export default function Page() {
                                     onChange={handleRecipientsInputChange}
                                     placeholder="Enter the value for each recipient, separated by commas"
                                 />
-                            </div> */}
+                            </div> 
+                            */}
                             <div className="col-md-12">
                                 <label>Values (comma-separated values for each recipient):</label>
                                 <textarea
                                     className="w-full" // This makes the textarea take up full width
-                                    rows="5"
+                                    rows="10"
                                     value={recipientsInput}
                                     onChange={handleRecipientsInputChange}
-                                    placeholder="Enter recipient addresses and values (e.g., 0xFe674cC158a6900b8D3Da018296565861329c398,4)"
+                                    placeholder="Enter recipient addresses and values (e.g., 0xFe674cC158a6900b8H3Da018296565861329g398,1.05)"
                                 />
                             </div>
+                            
 
                             <button onClick={handleDeposit} disabled={isPending}>
                                 {isPending ? 'Processing...' : 'Deposit'}
@@ -309,6 +311,6 @@ export default function Page() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
