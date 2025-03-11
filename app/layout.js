@@ -3,14 +3,17 @@ import { Providers } from "./providers";
 import '@rainbow-me/rainbowkit/styles.css';
 import Navbar from "@/Componests/Navbar/Navbar";
 import Footer from "@/Componests/Footer/Footer";
+import Link from 'next/link';
+import Sidebar from "@/Componests/Sidebar/Sidebar";
 
 export const metadata = {
-  title: "Instant Token Maker on Your Favorite Chain | DeployTokens",
-  description: "Why wait? Create and launch your token instantly on any blockchain- no coding, fast, secure, and effortless. Instant launch choose, customize.",
+  title: "Token Maker – Create Your Own Crypto Token in Minutes | DeployTokens",
+  description: "Create your own crypto token instantly with DeployTokens, the easiest Token Maker for ERC20, BEP20, and more. No coding required – launch in minutes!",
   twitterImage: "https://deploytokens.com/assets/images/sliderimg.png" 
 
 };
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
       <head>
@@ -18,6 +21,7 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
           rel="stylesheet"
         />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -32,38 +36,11 @@ export default function RootLayout({ children }) {
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={metadata.twitterImage} />
-        <script type="application/ld+json">
-          {`
-          {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "DeployTokens",
-            "alternateName": ["Deploy Tokens", "DeployTokens.com", "Crypto Token Creator", "Token Maker", "Token Creator", "No-code Token Builder", "Token Generator"],
-            "url": "https://deploytokens.com/",
-            "logo": "https://deploytokens.com/logo.png",
-            "description": "DeployTokens is a powerful token maker platform that allows anyone to create and launch blockchain tokens instantly without any coding required. Create erc20 token, bep20 token, base, polygon, and arbitrum. Launch your token instantly and grow your project effectively",
-            "foundingDate": "2024",
-            "inLanguage": "en-US",
-            "sameAs": [
-              "https://twitter.com/deploytokens",
-              "https://linkedin.com/company/deploytokens",
-              "https://github.com/deploytokens"
-            ],
-            "contactPoint": [
-              {
-                "@type": "ContactPoint",
-                "email": "info@deploytokens.com",
-                "contactType": ["general inquiries", "customer service"],
-                "availableLanguage": "en"
-              }
-            ]
-          }
-          `}
-        </script>
       </head>
       <body>
         <Providers>
-          <div>
+       <Sidebar/> 
+       <div className="maindiv">
             <Navbar />
             {children}
             <Footer />
@@ -88,12 +65,15 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
+      
 
         {/* Smartsupp noscript */}
         <noscript>
           Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a>
         </noscript>
+        
       </body>
+      
     </html>
   );
 }
