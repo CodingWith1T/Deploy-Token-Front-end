@@ -6,6 +6,7 @@ import erc20Abi from "@/config/helper/erc20.json";
 import { parseUnits } from 'viem';
 import { readContract, waitForTransactionReceipt } from "@wagmi/core";
 import { config } from "@/wagmi";
+import { VerifyToken } from '../../Componests/VerifyToken/VerifyToken';
 
 export default function Page() {
     const { address, isConnected, chain } = useAccount();
@@ -19,11 +20,21 @@ export default function Page() {
     const [sendEther, setSendEther] = useState(false); // Toggle for Ether vs Token
     const [error, setError] = useState(null);
 
+    const [name, setName] = useState(null);
+    const [symbol, setSymbol] = useState(null);
+    const [totalSupply, setTotalSupply] = useState(null);
+    const [balanceOf, setBalanceOf] = useState(null);
+    const [decimals, setDecimals] = useState(null);
+
     useEffect(() => {
         // Reset the transaction hash when a new deposit is being made
         setDepositHash(null);
         setError(null); // Clear any previous error
     }, [depositAmount, recipientsInput]);
+
+    useEffect(() => {
+        VerifyToken(tokenAddress, setName, setSymbol, setDecimals, setTotalSupply, setBalanceOf, address, setError);
+    }, [tokenAddress, chain]); 
 
     const handleRecipientsInputChange = (e) => {
         setRecipientsInput(e.target.value);
@@ -261,6 +272,14 @@ export default function Page() {
                                     placeholder="Calculated Deposit Amount"
                                 />
                             </div>
+
+                            <div className='mb-4'>
+                                {(name && symbol && totalSupply) ? (
+                                    `Name: ${name} Symbol: ${symbol} Decimals: ${decimals.toString()} Total Supply: ${totalSupply.toString()} Balance of : ${balanceOf.toString()}`
+                                ) : (
+                                    "Enter the token address and verify"
+                                )}
+                            </div>
                             {/* 
                             <div className="col-md-6">
                                 <label>Recipients (comma-separated addresses):</label>
@@ -292,7 +311,7 @@ export default function Page() {
                                     placeholder="Enter recipient addresses and values (e.g., 0xFe674cC158a6900b8H3Da018296565861329g398,1.05)"
                                 />
                             </div>
-                            
+
 
                             <button onClick={handleDeposit} disabled={isPending}>
                                 {isPending ? 'Processing...' : 'Deposit'}

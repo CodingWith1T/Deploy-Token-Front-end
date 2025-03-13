@@ -68,21 +68,13 @@ export default function ChainList() {
     }
   };
 
-  // Render the loading state or the chains
-  if (loading) {
-    return (
-      <div className="loading-text">
-        Loading...
-      </div>
-    );
-  }
   return (
     <section className="chainslist">
       <div className="container">
         <div className="Createtheading">
           <h1 className="header">Chains List</h1>
           <p>
-          Explore detailed information about various EVM networks with Chainlist. Find active RPC endpoints, chain IDs, native symbols, block explorers, and testnet faucets for any Chainlist network. Easily add custom networks to your MetaMask wallet with a single click using Chainlist MetaMask integration, making your Web3 experience seamless and hassle-free.
+            Explore detailed information about various EVM networks with Chainlist. Find active RPC endpoints, chain IDs, native symbols, block explorers, and testnet faucets for any Chainlist network. Easily add custom networks to your MetaMask wallet with a single click using Chainlist MetaMask integration, making your Web3 experience seamless and hassle-free.
           </p>
         </div>
 
@@ -99,40 +91,44 @@ export default function ChainList() {
         </div>
 
         <h3>Chains list</h3>
-        <ul>
-          {filteredChains.map((network) => (
-            <li key={network.chainId}>
-              <div className="row">
-                <div className="col-md-7 logodiv">
-                  {/* Load the logo based on network.icon (this might need to be adjusted) */}
-                  <img
-                    src={`/assets/images/chainDummyLogo.svg`}  // Placeholder logo, you can change this as needed
-                    alt="Logo"
-                  />
-                  <span>{network.name}</span>
+        {loading ?
+          <div className="loader"></div>  :
+          <ul>
+            {filteredChains.map((network) => (
+              <li key={network.chainId}>
+                <div className="row">
+                  <div className="col-md-7 logodiv">
+                    {/* Load the logo based on network.icon (this might need to be adjusted) */}
+                    <img
+                      src={`/assets/images/chainDummyLogo.svg`}  // Placeholder logo, you can change this as needed
+                      alt="Logo"
+                    />
+                    <span>{network.name}</span>
+                  </div>
+                  <div className="col-md-5 lts">
+                    <span className="bg1">
+                      <b>Chain ID</b> <br />
+                      {network.chainId}
+                    </span>
+                    <span className="bg2">
+                      <b>Currency</b> <br />
+                      {network.nativeCurrency.symbol}
+                    </span>
+                    <span className="metamaskbutton">
+                      <button
+                        onClick={() => addToMetaMask(network)}
+                        className="btn btn-primary"
+                      >
+                        Add to MetaMask
+                      </button>
+                    </span>
+                  </div>
                 </div>
-                <div className="col-md-5 lts">
-                  <span className="bg1">
-                    <b>Chain ID</b> <br />
-                    {network.chainId}
-                  </span>
-                  <span className="bg2">
-                    <b>Currency</b> <br />
-                    {network.nativeCurrency.symbol}
-                  </span>
-                  <span className="metamaskbutton">
-                    <button
-                      onClick={() => addToMetaMask(network)}
-                      className="btn btn-primary"
-                    >
-                      Add to MetaMask
-                    </button>
-                  </span>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        }
+
       </div>
     </section>
   );

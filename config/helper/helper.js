@@ -1,3 +1,4 @@
+export const DEAD_ADDRESS = '0x000000000000000000000000000000000000dEaD'
 // Main Fee
 export const creationFee = {
     '1': 0.018, // Ethereum Mainnet

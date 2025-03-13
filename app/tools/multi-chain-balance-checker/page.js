@@ -158,7 +158,7 @@ const MultiChainBalanceChecker = () => {
                     </div>
 
                     {loading && <>
-                        <p className="loading-text">Checking balance...</p>
+                        <div className="loader"></div>
                     </>}
                     {error && <p className="error-text">{error}</p>}
 
