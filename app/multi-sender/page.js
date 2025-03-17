@@ -1,12 +1,15 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { useAccount, useConnect, useWriteContract } from 'wagmi';
+import { useAccount, useConnect, useWriteContract, } from 'wagmi';
 import AirdropABI from '@/config/helper/AirdropABI.json';
 import erc20Abi from "@/config/helper/erc20.json";
 import { parseUnits } from 'viem';
 import { readContract, waitForTransactionReceipt } from "@wagmi/core";
 import { config } from "@/wagmi";
 import { VerifyToken } from '../../Componests/VerifyToken/VerifyToken';
+import Step1 from "./step1";
+import Step2 from "./step2";
+
 
 export default function Page() {
     const { address, isConnected, chain } = useAccount();
@@ -22,9 +25,10 @@ export default function Page() {
 
     const [name, setName] = useState(null);
     const [symbol, setSymbol] = useState(null);
-    const [totalSupply, setTotalSupply] = useState(null);
-    const [balanceOf, setBalanceOf] = useState(null);
     const [decimals, setDecimals] = useState(null);
+    const [totalSupply, setTotalSupply] = useState(null);
+    const [step, setStep] = useState(1);
+
 
     useEffect(() => {
         // Reset the transaction hash when a new deposit is being made
@@ -33,8 +37,8 @@ export default function Page() {
     }, [depositAmount, recipientsInput]);
 
     useEffect(() => {
-        VerifyToken(tokenAddress, setName, setSymbol, setDecimals, setTotalSupply, setBalanceOf, address, setError);
-    }, [tokenAddress, chain]); 
+        VerifyToken(tokenAddress, setName, setSymbol, setDecimals, setTotalSupply, setError);
+    }, [tokenAddress, chain]);
 
     const handleRecipientsInputChange = (e) => {
         setRecipientsInput(e.target.value);
@@ -123,7 +127,7 @@ export default function Page() {
 
             // Contract details
             const contract = {
-                address: "0x2C5263B3aC5af6d5aA79FB70c6EFE252Bab0Dc03",
+                address: "0x2C5263B3aC5af6d5aA79FB70c6EFE252Bab0Dc03", // BNB Address
                 abi: AirdropABI
             };
             if (sendEther) {
@@ -203,129 +207,22 @@ export default function Page() {
     return (
         <div className="airdroppage">
             <div className="container">
-                <h1>Your Proven Airdrop and Token Distribution Tool</h1>
-                <div className="row">
-                    <div className="col-md-4">
-                        <div className="ardbox">
-                            <h2>7,305</h2>
-                            <p>Projects launched with Token Tool</p>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="ardbox">
-                            <h2>50,000</h2>
-                            <p>Maximum number of airdrop recipients</p>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="ardbox">
-                            <h2>13,000+</h2>
-                            <p>Community members</p>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="ardbox">
-                            <h2>Use the most advanced airdrop tool</h2>
-                            <ul>
-                                <li>⦿ Save time by auto filling recipients</li>
-                                <li>⦿ Minimize gas fees</li>
-                                <li>⦿ Send any ERC20 token </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="ardbox">
-                            <h2>Airdrop tokens in order to</h2>
-                            <ul>
-                                <li>⦿ Reward your community</li>
-                                <li>⦿ Distribute tokens to investors</li>
-                                <li>⦿ Make dividend or coupon payments</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="dispersesec">
-                    <h3>Disperse Tokens</h3>
-                    <div className="airdropform">
-                        <div className="row">
-                            {!sendEther && (
-                                <>
-                                    <div className="col-md-6">
-                                        <label>Token Address:</label>
-                                        <input
-                                            type="text"
-                                            value={tokenAddress}
-                                            onChange={(e) => setTokenAddress(e.target.value)}
-                                            placeholder="Enter ERC-20 token address"
-                                        />
-                                    </div>
-                                </>
-                            )}
-
-                            <div className="col-md-6">
-                                <label>Deposit Amount (Calculated):</label>
-                                <input
-                                    type="text"
-                                    value={depositAmount}
-                                    disabled
-                                    placeholder="Calculated Deposit Amount"
-                                />
-                            </div>
-
-                            <div className='mb-4'>
-                                {(name && symbol && totalSupply) ? (
-                                    `Name: ${name} Symbol: ${symbol} Decimals: ${decimals.toString()} Total Supply: ${totalSupply.toString()} Balance of : ${balanceOf.toString()}`
-                                ) : (
-                                    "Enter the token address and verify"
-                                )}
-                            </div>
-                            {/* 
-                            <div className="col-md-6">
-                                <label>Recipients (comma-separated addresses):</label>
-                                <input
-                                    type="text"
-                                    value={recipientsInput}
-                                    onChange={(e) => setRecipientsInput(e.target.value)}
-                                    placeholder="Enter Ethereum addresses separated by commas"
-                                />
-                            </div>
-
-                            <div className="col-md-6">
-                                <label>Values (comma-separated values for each recipient):</label>
-                                <input
-                                    type="text"
-                                    value={recipientValues}
-                                    onChange={handleRecipientsInputChange}
-                                    placeholder="Enter the value for each recipient, separated by commas"
-                                />
-                            </div> 
-                            */}
-                            <div className="col-md-12">
-                                <label>Values (comma-separated values for each recipient):</label>
-                                <textarea
-                                    className="w-full" // This makes the textarea take up full width
-                                    rows="10"
-                                    value={recipientsInput}
-                                    onChange={handleRecipientsInputChange}
-                                    placeholder="Enter recipient addresses and values (e.g., 0xFe674cC158a6900b8H3Da018296565861329g398,1.05)"
-                                />
-                            </div>
-
-
-                            <button onClick={handleDeposit} disabled={isPending}>
-                                {isPending ? 'Processing...' : 'Deposit'}
-                            </button>
-
-                            {depositHash && (
-                                <div className="col-md-6">
-                                    <p>Transaction Hash:</p>
-                                    <a href={`https://etherscan.io/tx/${depositHash}`} target="_blank" rel="noopener noreferrer">
-                                        {depositHash}
-                                    </a>
-                                </div>
-                            )}
-                        </div>
+                <h1>Multisender: The fastest way to send tokens in bulk</h1>
+                <div className='arbox'>
+                    <div className='row'>
+                        {step == 1 && <Step1 setStep={setStep} recipientsInput={recipientsInput} handleRecipientsInputChange={handleRecipientsInputChange} tokenAddress={tokenAddress} setTokenAddress={setTokenAddress} />}
+                        {step === 2 && (
+                            <Step2
+                                depositAmount={depositAmount}
+                                name={name}
+                                symbol={symbol}
+                                decimals={decimals}
+                                totalSupply={totalSupply}
+                                recipientsInput={recipientsInput}
+                                setStep={setStep}
+                                handleDeposit={handleDeposit}
+                            />
+                        )}
                     </div>
                 </div>
             </div>

@@ -12884,7 +12884,7 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
 .logodiv span{ font-size: 20px; line-height: 56px; font-weight: 500;}
 .logodiv{ margin-top:-5px;}
 .banner img{ border-radius:10px; margin-bottom:50px;}
-.airdroppage{background:url(../public/assets/images/airdropbackground.png) top #edf3f7;  padding-bottom:80px; padding-top:50px;     padding: 50px 90px;}
+.airdroppage{background:url(../public/assets/images/airdropbackground.png) top #e8f8ff;  padding-top:50px;     padding: 50px 90px 80px;}
 .ardbox{ background:#fff; padding:20px; text-align:center; margin-bottom:10px; border-radius:10px;    box-shadow: 1px 5px 7px #d9e6eb;}
 .ardbox ul{ padding-left:0px;}
 .ardbox ul li{ display:inline-block; margin-right: 10px;}
@@ -12892,6 +12892,8 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
 .airdroppage h1{text-align: center; margin-bottom: 30px; font-weight: 700; font-size: 35px;}
 .dispersesec input{ width:100%; border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:20px; margin-top:8px;}
 .airdropform button:hover{ background:#333;}
+.arbox{background: rgb(0 128 255 / 20%); padding: 50px; border-radius: 20px;}
+.arbox label{ font-weight:700;}
 
 .airdropform{ background:#fff; padding:40px 30px;border-radius:10px;    box-shadow: 1px 5px 7px rgb(196 228 241);}
 .dispersesec h3 {margin-top: 40px; font-weight: 700; text-align: center; margin-bottom: 20px; font-size: 35px;    }
@@ -12904,6 +12906,13 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
     border-radius: 5px;
     margin: 20px auto;
 }
+.multisender{    background: #0d6efd;
+    color: #fff;
+    padding: 10px;
+    width: 180px;
+    border-radius: 6px;
+    margin: 0 auto;
+    margin-top: 6px;}
 
 .sidebar{background:#f0f4fd; margin-top:1px; border-right: 2px solid #d9e0f1;}
 .tokencontainer{width:73%; margin:0 auto;}
@@ -13013,6 +13022,26 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
 .navbar-brand{ float:left;}
 
 .tooglebuttondiv{ display:none;}
+.airdroppage select{ width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    margin-top: 5px;}
+.airdroppage input{ width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}	
+.airdroppage input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #000;
+}
+
+.airdroppage textarea{width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    margin-top: 5px;}
 
 
 
@@ -13210,4 +13239,3 @@ footer h5 {margin-bottom: 10px !important;}
 }
 
 @keyframes l1 {to{clip-path: inset(0 -34% 0 0)}}
-
