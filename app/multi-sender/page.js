@@ -1,15 +1,14 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { useAccount, useConnect, useWriteContract, } from 'wagmi';
+import { useAccount, useBalance, useConnect, useWriteContract, } from 'wagmi';
 import AirdropABI from '@/config/helper/AirdropABI.json';
 import erc20Abi from "@/config/helper/erc20.json";
 import { parseUnits } from 'viem';
 import { readContract, waitForTransactionReceipt } from "@wagmi/core";
 import { config } from "@/wagmi";
 import { VerifyToken } from '../../Componests/VerifyToken/VerifyToken';
-import Step1 from "./step1";
-import Step2 from "./step2";
-
+import Step1 from '../../Componests/MultiSender/Step1';
+import Step2 from '../../Componests/MultiSender/Step2';
 
 export default function Page() {
     const { address, isConnected, chain } = useAccount();
@@ -22,12 +21,28 @@ export default function Page() {
     let [recipientValues, setRecipientValues] = useState(''); // Values to send to each recipient
     const [sendEther, setSendEther] = useState(false); // Toggle for Ether vs Token
     const [error, setError] = useState(null);
+    const [errorRecipient, setErrorRecipient] = useState('');
 
     const [name, setName] = useState(null);
     const [symbol, setSymbol] = useState(null);
     const [decimals, setDecimals] = useState(null);
     const [totalSupply, setTotalSupply] = useState(null);
+    const [balance, setBalance] = useState(0);
     const [step, setStep] = useState(1);
+
+    const { data, isError, isLoading } = useBalance({
+        address: address, // Get the balance of the connected wallet
+    });
+
+    const [balanceWallet, setBalanceWallet] = useState(null);
+
+    useEffect(() => {
+        if (data) {
+          // Format the balance to 4 decimal places
+          const formattedBalance = parseFloat(data.formatted).toFixed(4);
+          setBalanceWallet(formattedBalance); // Set the formatted balance
+        }
+      }, [data]);
 
 
     useEffect(() => {
@@ -37,7 +52,7 @@ export default function Page() {
     }, [depositAmount, recipientsInput]);
 
     useEffect(() => {
-        VerifyToken(tokenAddress, setName, setSymbol, setDecimals, setTotalSupply, setError);
+        VerifyToken(tokenAddress, address, setName, setSymbol, setDecimals, setTotalSupply, setBalance, setError);
     }, [tokenAddress, chain]);
 
     const handleRecipientsInputChange = (e) => {
@@ -90,6 +105,8 @@ export default function Page() {
         // Parse recipients and values from the input
         const recipients = recipientsInput.split('\n').map(entry => entry.trim()).filter(Boolean);
         const recipients1 = recipients.map(entry => entry.split(',')[0].trim()).filter(Boolean);
+
+        
 
         let values = recipientValues;
 
@@ -210,7 +227,7 @@ export default function Page() {
                 <h1>Multisender: The fastest way to send tokens in bulk</h1>
                 <div className='arbox'>
                     <div className='row'>
-                        {step == 1 && <Step1 setStep={setStep} recipientsInput={recipientsInput} handleRecipientsInputChange={handleRecipientsInputChange} tokenAddress={tokenAddress} setTokenAddress={setTokenAddress} />}
+                        {step == 1 && <Step1 setStep={setStep} name={name} balance={balance} recipientsInput={recipientsInput} handleRecipientsInputChange={handleRecipientsInputChange} tokenAddress={tokenAddress} setTokenAddress={setTokenAddress}/>}
                         {step === 2 && (
                             <Step2
                                 depositAmount={depositAmount}
@@ -218,6 +235,9 @@ export default function Page() {
                                 symbol={symbol}
                                 decimals={decimals}
                                 totalSupply={totalSupply}
+                                balance={balance}
+                                address={address}
+                                balanceWallet={balanceWallet}
                                 recipientsInput={recipientsInput}
                                 setStep={setStep}
                                 handleDeposit={handleDeposit}

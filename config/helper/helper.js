@@ -1,29 +1,29 @@
 export const DEAD_ADDRESS = '0x000000000000000000000000000000000000dEaD'
 // Main Fee
 export const creationFee = {
-    '1': 0.018, // Ethereum Mainnet
-    '56': 0.077, // BNB Chain (BSC)
-    '8453': 0.018, // Base
-    '42161': 0.018, // Arbitrum
-    '10': 0.018, // Optimism
-    '137': 165, // Polygon POS (158 POL)
-    '43114': 2, // Avalanche
-    '1868': 0.018, // Soneium
-    '3797': 7500, // AlveyChain (2 ALV)
-    '1116': 98, // core
-    '81457': 0.018, // Blast
-    '324': 0.018, // zksync
-    '5000': 48, // Mantle (44 MNT)
-    '130': 0.018, // Unichain
-    '204': 0.077, // Op BNB
+    '1': 0.025, // Ethereum Mainnet
+    '56': 0.080, // BNB Chain (BSC)
+    '8453': 0.025, // Base
+    '42161': 0.025, // Arbitrum
+    '10': 0.025, // Optimism
+    '137': 215, // Polygon POS (158 POL)
+    '43114': 2.8, // Avalanche
+    '1868': 0.025, // Soneium
+    '3797': 10000, // AlveyChain (2 ALV)
+    '1116': 125, // core
+    '81457': 0.025, // Blast
+    '324': 0.025, // zksync
+    '5000': 66, // Mantle (44 MNT)
+    '130': 0.025, // Unichain
+    '204': 0.080, // Op BNB
     // New Added
-    '146': 66, // Sonic
-    '369': 1000000, // Pulsechain (PLS)
-    '2741': 0.018, // Abstract (ETH)
-    '59144': 0.018, // Linea
+    '146': 107, // Sonic
+    '369': 1300000, // Pulsechain (PLS)
+    '2741': 0.025, // Abstract (ETH)
+    '59144': 0.025, // Linea
 
-    '11155111': 0.1, // Sepolia
-    '97': 0.1, // BNB Chain Testnet
+    '11155111': 0.001, // Sepolia
+    '97': 0.001, // BNB Chain Testnet
 };
 
 
@@ -55,29 +55,29 @@ export const feeAddress ={
 
 // Add on Fee
 export const utilitiesFee = {
-    '1': 0.0018, // Ethereum Mainnet
-    '56': 0.0077, // BNB Chain (BSC)
-    '8453': 0.0018, // Base
-    '42161': 0.0018, // Arbitrum
-    '10': 0.0018, // Optimism
-    '137': 17, // Polygon POS (158 POL)
-    '43114': 0.2, // Avalanche
-    '1868': 0.0018, // Soneium
-    '3797': 750, // AlveyChain (2 ALV)
-    '1116': 10, // core
-    '81457': 0.0018, // Blast
-    '204': 0.0077, // Op BNB
-    '324': 0.0086, // zksync
-    '5000': 4.8, // Mantle (44 MNT)
+    '1': 0.0027, // Ethereum Mainnet
+    '56': 0.0089, // BNB Chain (BSC)
+    '8453': 0.0027, // Base
+    '42161': 0.0027, // Arbitrum
+    '10': 0.0027, // Optimism
+    '137': 25, // Polygon POS (158 POL)
+    '43114': 0.3, // Avalanche
+    '1868': 0.0027, // Soneium
+    '3797': 1050, // AlveyChain (2 ALV)
+    '1116': 15, // core
+    '81457': 0.0027, // Blast
+    '204': 0.0089, // Op BNB
+    '324': 0.0027, // zksync
+    '5000': 8, // Mantle (44 MNT)
 
-    '146': 7, // Sonic (S)
-    '369': 100000, // Pulsechain (PLS)
-    '2741': 0.0018, // Abstract
-    '59144': 0.0018, // Linea
-    '130': 0.0018, // UniChain
+    '146': 12, // Sonic (S)
+    '369': 150000, // Pulsechain (PLS)
+    '2741': 0.0027, // Abstract
+    '59144': 0.0027, // Linea
+    '130': 0.0027, // UniChain
 
-    '11155111': 0.003, // Sepolia
-    '97': 0.0040, // BNB Chain Testnet
+    '11155111': 0.0003, // Sepolia
+    '97': 0.00040, // BNB Chain Testnet
 };
 
 
@@ -108,8 +108,6 @@ export const utilitiesFee = {
 
 //     '3797':"0x20870C578e476359F84565053e58BCd465F12d71", // Alvay done
 // }       
-
-
 
 // Remix 
 // Compiler - 0.8.23
