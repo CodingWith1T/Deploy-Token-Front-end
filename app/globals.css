@@ -13082,6 +13082,9 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
     float: right;
 }
 .recipients-list p span b{background:#5a87c9; padding: 4px 10px; color: #fff;border-radius: 0px 4px 4px 0px;margin-left: 2px;}
+.ether .checkbox{float: inherit; display: inline-flex;}
+.ether input{width: auto; margin-right:5px;}
+.ether{ margin-bottom:15px;}
 
 
 

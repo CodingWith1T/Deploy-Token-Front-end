@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function Step1({ setStep, name={name}, balance={balance}, recipientsInput, handleRecipientsInputChange, tokenAddress, setTokenAddress }) {
+export default function Step1({ setStep, sendEther, name, balance, recipientsInput, handleRecipientsInputChange, tokenAddress, setTokenAddress }) {
     const [errorMessage, setErrorMessage] = useState('');
 
     // Regex to validate Ethereum address format
@@ -46,50 +46,73 @@ export default function Step1({ setStep, name={name}, balance={balance}, recipie
 
     // Check if the form is valid for enabling the button
     const isFormValid = () => {
-        const isAddressValid = tokenAddress && isValidAddress(tokenAddress);
         const isRecipientsValid = recipientsInput.split('\n').every((line) => {
             const [address, amount] = line.split(',').map((part) => part.trim());
             return isValidAddress(address) && isValidAmount(amount);
         });
 
-        return isAddressValid && isRecipientsValid && recipientsInput.trim() !== '';
+        return isRecipientsValid && recipientsInput.trim() !== '';
     };
 
     return (
         <>
-            <div className='col-md-4'>
-                <label htmlFor="Chain">Chain</label><br />
-                <select placeholder='Chain' id="Chain">
-                    <option value="BNB">BNB</option>
-                </select>
-            </div>
-            <div className='col-md-8'>
-                <label htmlFor="Token">Token</label><br />
-                <input 
-                    type="text" 
-                    id="Token" 
-                    placeholder='Token' 
-                    name="Token" 
-                    value={tokenAddress} 
-                    onChange={(e) => setTokenAddress(e.target.value)} 
-                />
-                {tokenAddress && <div className='col-md-12'><strong>Token Name : </strong>{name} <span><strong>Balance : </strong></span> {balance}</div>} 
-            </div> 
-            
-            <div className='col-md-12'>
-                <label htmlFor="Recipients">Enter recipient addresses and amounts:</label><br />
-                <textarea
-                    id="w3review"
-                    name="w3review"
-                    value={recipientsInput}
-                    rows="4"
-                    cols="50"
-                    placeholder='Insert address and amount, separate with a comma'
-                    onChange={handleTextareaChange}
-                />
-            </div>
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-            <p>Note: Insert one address and respective amount per line. Separate the address and amount with a comma and no space in between.</p>
+            {!sendEther && (
+                <>
+                    <div className='col-md-4'>
+                        <label htmlFor="Chain">Chain</label><br />
+                        <select placeholder='Chain' id="Chain">
+                            <option value="BNB">BNB</option>
+                        </select>
+                    </div>
+                    <div className='col-md-8'>
+                        <label htmlFor="Token">Token</label><br />
+                        <input
+                            type="text"
+                            id="Token"
+                            placeholder='Token'
+                            name="Token"
+                            value={tokenAddress}
+                            onChange={(e) => setTokenAddress(e.target.value)}
+                        />
+                        {tokenAddress && <div className='col-md-12'><strong>Token Name : </strong>{name} <span><strong>Balance : </strong></span> {balance}</div>}
+                    </div>
+
+                    <div className='col-md-12'>
+                        <label htmlFor="Recipients">Enter recipient addresses and amounts:</label><br />
+                        <textarea
+                            id="w3review"
+                            name="w3review"
+                            value={recipientsInput}
+                            rows="4"
+                            cols="50"
+                            placeholder='Insert address and amount, separate with a comma'
+                            onChange={handleTextareaChange}
+                        />
+                    </div>
+                    {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                    <p>Note: Insert one address and respective amount per line. Separate the address and amount with a comma and no space in between.</p>
+
+                </>
+            )}
+            {sendEther && (
+                <>
+                    <div className='col-md-12'>
+                        <label htmlFor="Recipients">Enter recipient addresses and amounts:</label><br />
+                        <textarea
+                            id="w3review"
+                            name="w3review"
+                            value={recipientsInput}
+                            rows="4"
+                            cols="50"
+                            placeholder='Insert address and amount, separate with a comma'
+                            onChange={handleTextareaChange}
+                        />
+                    </div>
+                    {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                    <p>Note: Insert one address and respective amount per line. Separate the address and amount with a comma and no space in between.</p>
+
+                </>
+            )}
             <button
                 className={`multisender ${!isFormValid() ? 'bg-black' : 'multisender'}`}
                 disabled={!isFormValid()}

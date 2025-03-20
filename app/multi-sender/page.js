@@ -38,11 +38,11 @@ export default function Page() {
 
     useEffect(() => {
         if (data) {
-          // Format the balance to 4 decimal places
-          const formattedBalance = parseFloat(data.formatted).toFixed(4);
-          setBalanceWallet(formattedBalance); // Set the formatted balance
+            // Format the balance to 4 decimal places
+            const formattedBalance = parseFloat(data.formatted).toFixed(4);
+            setBalanceWallet(formattedBalance); // Set the formatted balance
         }
-      }, [data]);
+    }, [data]);
 
 
     useEffect(() => {
@@ -106,7 +106,7 @@ export default function Page() {
         const recipients = recipientsInput.split('\n').map(entry => entry.trim()).filter(Boolean);
         const recipients1 = recipients.map(entry => entry.split(',')[0].trim()).filter(Boolean);
 
-        
+
 
         let values = recipientValues;
 
@@ -226,8 +226,11 @@ export default function Page() {
             <div className="container">
                 <h1>Multisender: The fastest way to send tokens in bulk</h1>
                 <div className='arbox'>
+                    <div className="ether">
+                        <input type="checkbox" checked={sendEther} onChange={handleSendEtherToggle} /> <label>Send BNB?</label>
+                    </div>
                     <div className='row'>
-                        {step == 1 && <Step1 setStep={setStep} name={name} balance={balance} recipientsInput={recipientsInput} handleRecipientsInputChange={handleRecipientsInputChange} tokenAddress={tokenAddress} setTokenAddress={setTokenAddress}/>}
+                        {step == 1 && <Step1 setStep={setStep} sendEther={sendEther} name={name} balance={balance} recipientsInput={recipientsInput} handleRecipientsInputChange={handleRecipientsInputChange} tokenAddress={tokenAddress} setTokenAddress={setTokenAddress} />}
                         {step === 2 && (
                             <Step2
                                 depositAmount={depositAmount}
@@ -236,6 +239,7 @@ export default function Page() {
                                 decimals={decimals}
                                 totalSupply={totalSupply}
                                 balance={balance}
+                                sendEther={sendEther}
                                 address={address}
                                 balanceWallet={balanceWallet}
                                 recipientsInput={recipientsInput}
