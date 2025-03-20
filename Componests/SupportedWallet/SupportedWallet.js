@@ -23,11 +23,11 @@ export default function SupportedWallet() {
                   Launch Your Token on Major Blockchains
                 </h3>
                 <p className="Launchpara">Why spend weeks and thousands on developers when you can create a token in minutes? With DeployTokens, our powerful Token Maker and Token Creator, you can bring your ideas to life—no coding required.</p>
-                <p className="Launchpara launchtokens">
+                <p className="Launchpara">
                   Whether you're launching a token for fundraising, user incentives, or as a new digital currency, our user-friendly platform makes it seamless. DeployTokens supports all major blockchains, giving businesses, communities, and innovators the flexibility they need.
                 </p>
 				
-				<p className="Launchpara">Starting at just $50, we make token creation fast, affordable, and hassle-free. Leave the coding to us while you focus on your vision. Get started today and experience effortless tokenization! </p>
+				<p className="Launchpara launchtokens">Starting at just $50, we make token creation fast, affordable, and hassle-free. Leave the coding to us while you focus on your vision. Get started today and experience effortless tokenization! </p>
                 <Link className="startcreating btn btn-primary btn-lg px-4 me-sm-3" href="/create-token/ethereum">Launch Token
                   
                 </Link>
@@ -113,67 +113,7 @@ export default function SupportedWallet() {
         </div>
       </section>
 
-      <section className="trusted">
-        <div className="container text-center">
-          <div className="col-sm-12">
-            <h3 className="display-6">Thriving Community</h3>
-            <p className="thrivingsub">Connect with the largest community of token creators for inspiration and support.</p>
-          </div>
-          <h2 className="Connects"> Trusted by Startups </h2>
-          <div className="row">
-            <div className="col-sm">
-              <div className="boxs">
-                <h4>🔐 Reliable <br />
-                  Smart Contracts</h4>
-                <p>Secure your project with our trusted, thoroughly tested, solutions.</p>
-              </div>
-            </div>
-            <div className="col-sm">
-              <div className="boxs">
-                <h4>⚙️ Proven Platform</h4>
-                <p>Join countless startups that rely on us—no reported issues, only success stories.</p>
-              </div>
-            </div>
-            <div className="col-sm">
-              <div className="boxs">
-                <h4>✨ The Best Choice for <br />
-                  Your Project</h4>
-                <p>Take your project to the next level with our secure and dependable services.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="container lastchild mt-2">
-          <div className="row">
-            <div className="col-sm">
-              <div className="card mb-3">
-                <div className="card-body">
-                  <h5 className="card-title">2K+</h5>
-                  <p className="card-text">Tokens generated</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm">
-              <div className="card mb-3">
-                <div className="card-body">
-                  <h5 className="card-title">10K+</h5>
-                  <p className="card-text">Unique users</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm">
-              <div className="card mb-3">
-                <div className="card-body">
-                  <h5 className="card-title">10K+</h5>
-                  <p className="card-text">Automated tests</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
+      
       <section className="affiliate">
         <div className="container">
           <div className="d-flex gx-5">

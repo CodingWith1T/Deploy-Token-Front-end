@@ -1,255 +1,504 @@
-"use client"
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import { useAccount, useBalance, useConnect, useWriteContract, } from 'wagmi';
-import AirdropABI from '@/config/helper/AirdropABI.json';
-import erc20Abi from "@/config/helper/erc20.json";
-import { parseUnits } from 'viem';
-import { readContract, waitForTransactionReceipt } from "@wagmi/core";
-import { config } from "@/wagmi";
-import { VerifyToken } from '../../Componests/VerifyToken/VerifyToken';
-import Step1 from '../../Componests/MultiSender/Step1';
-import Step2 from '../../Componests/MultiSender/Step2';
+import { ethers } from 'ethers';
+import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 
-export default function Page() {
-    const { address, isConnected, chain } = useAccount();
-    const { connectAsync } = useConnect(); // For connecting the wallet
-    const { writeContractAsync, isPending } = useWriteContract(); // To write to the contract
-    const [depositHash, setDepositHash] = useState(null); // To store the transaction hash
-    const [depositAmount, setDepositAmount] = useState(''); // Amount input field for Ether or tokens
-    const [recipientsInput, setRecipientsInput] = useState(''); // Recipients' Ethereum addresses
-    const [tokenAddress, setTokenAddress] = useState(''); // Token address for ERC-20 tokens
-    let [recipientValues, setRecipientValues] = useState(''); // Values to send to each recipient
-    const [sendEther, setSendEther] = useState(false); // Toggle for Ether vs Token
-    const [error, setError] = useState(null);
-    const [errorRecipient, setErrorRecipient] = useState('');
+const Page = () => {
+  const [recipientList, setRecipientList] = useState('');
+  const [tokenAddress, setTokenAddress] = useState('');
+  const [isNativeToken, setIsNativeToken] = useState(true);
+  const [tokenBalance, setTokenBalance] = useState(null);
+  const [tokenDecimals, setTokenDecimals] = useState(null);
+  const [tokenName, setTokenName] = useState(null);
+  const [tokenSymbol, setTokenSymbol] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [totalAmount, setTotalAmount] = useState('0');
+  const [remainingBalance, setRemainingBalance] = useState(null);
+  const [transactionDetails, setTransactionDetails] = useState(null);
+  const [isApproved, setIsApproved] = useState(false);
+  const [costDetails, setCostDetails] = useState(null);
+  const { address: userAddress, isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
 
-    const [name, setName] = useState(null);
-    const [symbol, setSymbol] = useState(null);
-    const [decimals, setDecimals] = useState(null);
-    const [totalSupply, setTotalSupply] = useState(null);
-    const [balance, setBalance] = useState(0);
-    const [step, setStep] = useState(1);
+  const supportedChains = [
+    { id: 56, name: 'Binance Smart Chain', nativeCurrency: 'BNB', multisenderAddress: '0x43924f32140b16a4cd2980471429733512da144f', explorerBaseUrl: 'https://bscscan.com' },
+  ];
 
-    const { data, isError, isLoading } = useBalance({
-        address: address, // Get the balance of the connected wallet
-    });
+  const DEFAULT_CHAIN_ID = 56; // BNB Mainnet
 
-    const [balanceWallet, setBalanceWallet] = useState(null);
+  const currentChain = supportedChains.find(chain => chain.id === chainId) || supportedChains[0]; // Default to BNB if chainId not found
+  const nativeCurrencySymbol = currentChain.nativeCurrency; // Will always be 'BNB'
+  const multisenderAddress = currentChain.multisenderAddress;
+  const explorerBaseUrl = currentChain.explorerBaseUrl;
 
-    useEffect(() => {
-        if (data) {
-            // Format the balance to 4 decimal places
-            const formattedBalance = parseFloat(data.formatted).toFixed(4);
-            setBalanceWallet(formattedBalance); // Set the formatted balance
+  const erc20Abi = [
+    'function approve(address spender, uint256 amount) public returns (bool)',
+    'function transfer(address to, uint256 amount) public returns (bool)',
+    'function decimals() public view returns (uint8)',
+    'function balanceOf(address account) public view returns (uint256)',
+    'function name() public view returns (string)',
+    'function symbol() public view returns (string)',
+    'function allowance(address owner, address spender) public view returns (uint256)',
+  ];
+
+  const multisenderAbi = [
+    'function sendNative(address[] calldata recipients, uint256[] calldata amounts) external payable',
+    'function sendTokens(address token, address[] calldata recipients, uint256[] calldata amounts) external payable',
+    'function adminFee() public view returns (uint256)',
+  ];
+
+  const MAX_RECIPIENTS_PER_BATCH = 200;
+
+  // Switch to BNB Mainnet when wallet connects if not already on it
+  useEffect(() => {
+    if (isConnected && chainId !== DEFAULT_CHAIN_ID) {
+      switchChain({ chainId: DEFAULT_CHAIN_ID });
+    }
+  }, [isConnected, chainId, switchChain]);
+
+  useEffect(() => {
+    setIsApproved(false);
+    setTransactionDetails(null);
+    setRemainingBalance(null);
+    if (isNativeToken) setTokenAddress('');
+  }, [isNativeToken]);
+
+  useEffect(() => {
+    const fetchTokenDetails = async () => {
+      if (!isConnected || !tokenAddress || !ethers.isAddress(tokenAddress)) {
+        setTokenBalance(null);
+        setTokenDecimals(null);
+        setTokenName(null);
+        setTokenSymbol(null);
+        return;
+      }
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const tokenContract = new ethers.Contract(tokenAddress, erc20Abi, provider);
+        const balance = await tokenContract.balanceOf(userAddress);
+        const decimals = await tokenContract.decimals();
+        const name = await tokenContract.name();
+        const symbol = await tokenContract.symbol();
+        setTokenBalance(ethers.formatUnits(balance, decimals));
+        setTokenDecimals(decimals);
+        setTokenName(name);
+        setTokenSymbol(symbol);
+        setError('');
+      } catch (err) {
+        setError('Failed to fetch token details: ' + err.message);
+      }
+    };
+    fetchTokenDetails();
+  }, [tokenAddress, userAddress, isConnected]);
+
+  useEffect(() => {
+    const fetchNativeBalance = async () => {
+      if (!isConnected || !isNativeToken) {
+        setTokenBalance(null);
+        setTokenDecimals(null);
+        setTokenName(null);
+        setTokenSymbol(null);
+        return;
+      }
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const balance = await provider.getBalance(userAddress);
+        setTokenBalance(ethers.formatEther(balance));
+        setTokenDecimals(18);
+        setTokenName(nativeCurrencySymbol);
+        setTokenSymbol(nativeCurrencySymbol);
+        setError('');
+      } catch (err) {
+        setError('Failed to fetch native token balance: ' + err.message);
+      }
+    };
+    fetchNativeBalance();
+  }, [isNativeToken, userAddress, isConnected, nativeCurrencySymbol]);
+
+  const parseRecipients = () => {
+    const lines = recipientList.trim().split('\n');
+    const recipients = [];
+    const amounts = [];
+    let total = BigInt(0);
+
+    for (const line of lines) {
+      const [address, amount] = line.split(',').map(item => item.trim());
+      if (!ethers.isAddress(address)) throw new Error(`Invalid address: ${address}`);
+      if (!amount || isNaN(amount) || parseFloat(amount) <= 0) throw new Error(`Invalid amount for address ${address}: ${amount}`);
+      recipients.push(address);
+      const parsedAmount = isNativeToken ? ethers.parseEther(amount) : ethers.parseUnits(amount, tokenDecimals || 18);
+      amounts.push(parsedAmount);
+      total += parsedAmount;
+    }
+    return { recipients, amounts, total };
+  };
+
+  const estimateGas = async (signer, recipients, amounts, totalValue, adminFee) => {
+    const multisenderContract = new ethers.Contract(multisenderAddress, multisenderAbi, signer);
+    return isNativeToken 
+      ? await multisenderContract.sendNative.estimateGas(recipients, amounts, { value: totalValue + adminFee })
+      : await multisenderContract.sendTokens.estimateGas(tokenAddress, recipients, amounts, { value: adminFee });
+  };
+
+  const fetchAdminFee = async () => {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const multisenderContract = new ethers.Contract(multisenderAddress, multisenderAbi, provider);
+    return await multisenderContract.adminFee();
+  };
+
+  const checkAllowance = async () => {
+    if (isNativeToken || !tokenAddress || !ethers.isAddress(tokenAddress)) return true;
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const tokenContract = new ethers.Contract(tokenAddress, erc20Abi, provider);
+    const { total } = parseRecipients();
+    const allowance = await tokenContract.allowance(userAddress, multisenderAddress);
+    return allowance >= total;
+  };
+
+  const calculateCost = async () => {
+    if (!recipientList || !isConnected) return;
+    setError('');
+    setCostDetails(null);
+
+    try {
+      const { recipients, amounts, total } = parseRecipients();
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const gasPrice = ethers.parseUnits("5", "gwei");
+      const adminFee = await fetchAdminFee();
+
+      if (!isNativeToken && (!tokenAddress || !ethers.isAddress(tokenAddress))) {
+        setError('Please enter a valid token address.');
+        return;
+      }
+
+      if (!isNativeToken) {
+        const hasAllowance = await checkAllowance();
+        if (!hasAllowance) {
+          setError('Insufficient allowance. Please approve the token first.');
+          return;
         }
-    }, [data]);
+      }
 
+      const gasEstimate = await estimateGas(signer, recipients, amounts, total, adminFee);
+      const gasCost = gasEstimate * gasPrice;
 
-    useEffect(() => {
-        // Reset the transaction hash when a new deposit is being made
-        setDepositHash(null);
-        setError(null); // Clear any previous error
-    }, [depositAmount, recipientsInput]);
+      setCostDetails({
+        totalSent: isNativeToken ? ethers.formatEther(total) : ethers.formatUnits(total, tokenDecimals || 18),
+        adminFee: ethers.formatEther(adminFee),
+        gasCost: ethers.formatEther(gasCost),
+        totalCost: isNativeToken ? ethers.formatEther(total + adminFee + gasCost) : ethers.formatEther(adminFee + gasCost),
+      });
+    } catch (err) {
+      if (err.reason === 'ERC20: insufficient allowance') {
+        setError('Insufficient allowance. Please approve the token first.');
+      } else if (err.code === 'CALL_EXCEPTION') {
+        setError('Failed to estimate gas cost. Please check your inputs or network.');
+      } else {
+        setError('Failed to calculate cost: ' + err.message);
+      }
+    }
+  };
 
-    useEffect(() => {
-        VerifyToken(tokenAddress, address, setName, setSymbol, setDecimals, setTotalSupply, setBalance, setError);
-    }, [tokenAddress, chain]);
+  const handleApprove = async () => {
+    if (!isConnected) {
+      setError('Please connect your wallet to proceed.');
+      return;
+    }
+    if (!tokenAddress || !ethers.isAddress(tokenAddress)) {
+      setError('Please enter a valid token address.');
+      return;
+    }
+    setError('');
+    setSuccess('');
+    setLoading(true);
+    setTransactionDetails(null);
+    setRemainingBalance(null);
 
-    const handleRecipientsInputChange = (e) => {
-        setRecipientsInput(e.target.value);
+    try {
+      const { total } = parseRecipients();
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const tokenContract = new ethers.Contract(tokenAddress, erc20Abi, signer);
 
-        // Parse recipients and values from input
-        const entries = e.target.value.split('\n').map(entry => entry.trim()).filter(Boolean);
+      const allowance = await tokenContract.allowance(userAddress, multisenderAddress);
+      if (allowance < total) {
+        const approveTx = await tokenContract.approve(multisenderAddress, total);
+        await approveTx.wait();
+        setIsApproved(true);
+        setSuccess('Token approved successfully! Now you can send.');
+      } else {
+        setIsApproved(true);
+        setSuccess('Already approved! Proceed to send.');
+      }
+      await calculateCost();
+    } catch (err) {
+      console.error("Approval error:", err);
+      setError('Approval failed: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const recipients = [];
-        const values = [];
+  const handleMultisend = async () => {
+    if (!isConnected) return setError('Please connect your wallet.');
+    if (!isNativeToken && (!tokenAddress || !ethers.isAddress(tokenAddress))) return setError('Please enter a valid token address.');
+    if (!multisenderAddress) return setError('Multisender contract not available on this chain.');
+    if (!isNativeToken && !isApproved) return setError('Please approve the token first.');
 
-        let isValid = true;
+    setError('');
+    setSuccess('');
+    setLoading(true);
+    setTransactionDetails(null);
+    setRemainingBalance(null);
 
-        entries.forEach(entry => {
-            const [address, value] = entry.split(',').map(item => item.trim());
+    try {
+      const { recipients, amounts, total } = parseRecipients();
+      setTotalAmount(isNativeToken ? ethers.formatEther(total) : ethers.formatUnits(total, tokenDecimals || 18));
+      if (recipients.length > MAX_RECIPIENTS_PER_BATCH) throw new Error(`Too many recipients. Maximum allowed per batch is ${MAX_RECIPIENTS_PER_BATCH}.`);
 
-            if (isNaN(value) || parseFloat(value) <= 0) {
-                isValid = false;
-            }
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const gasPrice = ethers.parseUnits("5", "gwei");
+      const adminFee = await fetchAdminFee();
 
-            // Push to recipients and values if valid
-            if (address && value && !isNaN(value)) {
-                recipients.push(address);
-                values.push(value);
-            }
+      if (isNativeToken) {
+        const balance = await provider.getBalance(userAddress);
+        const gasEstimate = await estimateGas(signer, recipients, amounts, total, adminFee);
+        const gasCost = gasEstimate * gasPrice;
+        const totalCost = total + adminFee + gasCost;
 
+        if (balance < totalCost) throw new Error(`Insufficient balance. Required: ${ethers.formatEther(totalCost)} ${nativeCurrencySymbol}`);
+
+        const multisenderContract = new ethers.Contract(multisenderAddress, multisenderAbi, signer);
+        const tx = await multisenderContract.sendNative(recipients, amounts, { 
+          value: total + adminFee,
+          gasLimit: gasEstimate * BigInt(12) / BigInt(10),
+          gasPrice
         });
-        if (isValid) {
-            setRecipientValues(values);
-            setError(null); // Clear error if validation passes
-            setDepositAmount(values.reduce((acc, curr) => acc + parseFloat(curr), 0).toString()); // Total deposit amount
-        } else {
-            setError('Invalid address or value format. Ensure each entry is "address,value".');
-        }
-    };
+        console.log("Transaction sent, hash:", tx.hash);
+        const receipt = await tx.wait();
+        console.log("Transaction receipt:", receipt);
 
+        if (receipt.status === 0) throw new Error('Transaction reverted.');
 
+        const newBalance = await provider.getBalance(userAddress);
+        setRemainingBalance(ethers.formatEther(newBalance));
+        const details = {
+          totalSent: ethers.formatEther(total),
+          adminFee: ethers.formatEther(adminFee),
+          recipientCount: recipients.length,
+          txHash: receipt.transactionHash || tx.hash,
+          explorerUrl: `${explorerBaseUrl}/tx/${receipt.transactionHash || tx.hash}`,
+        };
+        setTransactionDetails(details);
+        setSuccess(`Successfully sent ${ethers.formatEther(total)} ${nativeCurrencySymbol} to ${recipients.length} addresses`);
+        setTimeout(() => setSuccess(''), 5000);
+      } else {
+        const tokenContract = new ethers.Contract(tokenAddress, erc20Abi, signer);
+        const decimals = await tokenContract.decimals();
+        const tokenBalance = await tokenContract.balanceOf(userAddress);
 
-    const handleSendEtherToggle = () => {
-        setSendEther(!sendEther);
-    };
+        if (tokenBalance < total) throw new Error(`Insufficient token balance. Required: ${ethers.formatUnits(total, decimals)} ${tokenSymbol || 'Tokens'}`);
 
-    const handleDeposit = async () => {
-        // Ensure the wallet is connected and is on the correct network
-        if (!isConnected) {
-            alert('Please connect your wallet and ensure it is on the correct network.');
-            return;
-        }
+        const nativeBalance = await provider.getBalance(userAddress);
+        const gasEstimate = await estimateGas(signer, recipients, amounts, 0, adminFee);
+        const gasCost = gasEstimate * gasPrice;
 
-        // Parse recipients and values from the input
-        const recipients = recipientsInput.split('\n').map(entry => entry.trim()).filter(Boolean);
-        const recipients1 = recipients.map(entry => entry.split(',')[0].trim()).filter(Boolean);
+        if (nativeBalance < (adminFee + gasCost)) throw new Error(`Insufficient ${nativeCurrencySymbol} for fee and gas: ${ethers.formatEther(adminFee + gasCost)}`);
 
+        const multisenderContract = new ethers.Contract(multisenderAddress, multisenderAbi, signer);
+        const tx = await multisenderContract.sendTokens(tokenAddress, recipients, amounts, {
+          value: adminFee,
+          gasLimit: gasEstimate * BigInt(12) / BigInt(10),
+          gasPrice
+        });
+        console.log("Transaction sent, hash:", tx.hash);
+        const receipt = await tx.wait();
+        console.log("Transaction receipt:", receipt);
 
+        if (receipt.status === 0) throw new Error('Transaction reverted.');
 
-        let values = recipientValues;
+        const newTokenBalance = await tokenContract.balanceOf(userAddress);
+        setRemainingBalance(ethers.formatUnits(newTokenBalance, decimals));
+        const details = {
+          totalSent: ethers.formatUnits(total, decimals),
+          adminFee: ethers.formatEther(adminFee),
+          recipientCount: recipients.length,
+          txHash: receipt.transactionHash || tx.hash,
+          explorerUrl: `${explorerBaseUrl}/tx/${receipt.transactionHash || tx.hash}`,
+        };
+        setTransactionDetails(details);
+        setSuccess(`Successfully sent ${ethers.formatUnits(total, decimals)} ${tokenSymbol} to ${recipients.length} addresses`);
+        setTimeout(() => setSuccess(''), 5000);
+        setIsApproved(false);
+      }
+    } catch (err) {
+      console.error("Transaction error:", err);
+      setError(err.message || 'An error occurred during the transaction.');
+      if (err.transactionHash) {
+        setTransactionDetails({
+          totalSent: totalAmount,
+          adminFee: ethers.formatEther(await fetchAdminFee()),
+          recipientCount: parseRecipients().recipients.length,
+          txHash: err.transactionHash,
+          explorerUrl: `${explorerBaseUrl}/tx/${err.transactionHash}`,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Check if recipientValues is an array (if it is, join into a string)
-        if (Array.isArray(values)) {
-            values = values.join('\n');
-        }
+  useEffect(() => {
+    calculateCost();
+  }, [recipientList, isNativeToken, tokenAddress]);
 
-        // Now, we can safely use split() on values
-        values = values.split('\n').map(value => value.trim()).filter(Boolean);
+  return (
+    <div className="multisenderbox airdroppage">
+      <h1>Multisender: The fastest way to send tokens in bulk</h1>
+      <div className="formbox">
+        {!isConnected && (
+          <p className="wallet-warning">Please connect your wallet to proceed.</p>
+        )}
+        <div className="input-group">
+          <label className="label">Select Blockchain</label>
+          <select
+            className="select"
+            value={chainId || DEFAULT_CHAIN_ID} // Default to 56
+            onChange={(e) => switchChain({ chainId: parseInt(e.target.value) })}
+            disabled={!isConnected}
+          >
+            {supportedChains.map((chain) => (
+              <option key={chain.id} value={chain.id}>
+                {chain.name} ({chain.nativeCurrency})
+              </option>
+            ))}
+          </select>
+          {costDetails && <p>Admin Fee: {costDetails.adminFee} {nativeCurrencySymbol}</p>}
+        </div>
+        <div className="label"><b>Token Type</b></div>
+        <div className="toggle-group">
+          <button
+            className={`toggle-button ${isNativeToken ? 'toggle-button-active' : ''}`}
+            onClick={() => setIsNativeToken(true)}
+            disabled={!isConnected}
+          >
+            Native ({nativeCurrencySymbol})
+          </button>
+          <button
+            className={`toggle-button ${!isNativeToken ? 'toggle-button-active' : ''}`}
+            onClick={() => setIsNativeToken(false)}
+            disabled={!isConnected}
+          >
+            ERC20/BEP20
+          </button>
+        </div>
 
-        // Validate that recipients and values arrays have the same length
-        if (recipients.length === 0 || values.length === 0 || recipients.length !== values.length) {
-            alert('Please ensure recipients and values are provided correctly.');
-            return;
-        }
+        {!isNativeToken && (
+          <div className="input-group">
+            <label className="label">Token Address</label>
+            <input
+              type="text"
+              className="input"
+              value={tokenAddress}
+              onChange={(e) => setTokenAddress(e.target.value)}
+              placeholder="e.g. 0x..."
+              disabled={!isConnected}
+            />
+            {tokenName && tokenSymbol && tokenBalance !== null && (
+              <p><b>Token:</b> {tokenName} ({tokenSymbol})<br /><b>Your Balance:</b> {tokenBalance}</p>
+            )}
+          </div>
+        )}
 
-        // Parse the values (token amounts) into appropriate units
-        const parsedValues = values.map(value => {
-            const parsed = parseUnits(value, 18); // Assuming 18 decimals for ERC-20 tokens
-            if (parsed === undefined) {
-                return null; // Invalid value
-            }
-            return parsed.toString();  // Convert BigInt to string
-        }).filter(Boolean);// Remove any invalid values
+        {isNativeToken && tokenBalance !== null && (
+          <div className="input-group">
+            <p><b>Token:</b> {tokenName} ({tokenSymbol})<br /><b>Your Balance:</b> {tokenBalance}</p>
+          </div>
+        )}
 
-        if (parsedValues.length === 0) {
-            alert('Invalid value provided. Ensure each value is a valid number.');
-            return;
-        }
-        try {
-            if (!address) {
-                await connectAsync();
-            }
+        <div className="input-group">
+          <label className="label">Recipient List (Format: address,amount per line)</label>
+          <textarea
+            className="textarea"
+            value={recipientList}
+            onChange={(e) => setRecipientList(e.target.value)}
+            placeholder="Insert address and amount, separate with a comma"
+            disabled={!isConnected}
+          />
+          <p><b>Maximum recipients per batch:</b> {MAX_RECIPIENTS_PER_BATCH}</p>
+        </div>
 
-            // Contract details
-            const contract = {
-                address: "0x2C5263B3aC5af6d5aA79FB70c6EFE252Bab0Dc03", // BNB Address
-                abi: AirdropABI
-            };
-            if (sendEther) {
-                // Validate deposit amount for Ether
-                const parsedDepositAmount = parseFloat(depositAmount);
-                if (isNaN(parsedDepositAmount) || parsedDepositAmount <= 0) {
-                    alert('Please enter a valid deposit amount');
-                    return;
+        {costDetails && (
+          <div className="Maximumbox input-group">
+            <p><b>Total Sent:</b> {costDetails.totalSent} {isNativeToken ? nativeCurrencySymbol : tokenSymbol || 'Tokens'}</p>
+            <p><b>Admin Fee:</b> {costDetails.adminFee} {nativeCurrencySymbol}</p>
+            <p><b>Estimated Gas Cost:</b> {costDetails.gasCost} {nativeCurrencySymbol}</p>
+            <p><b>Total Cost:</b> {costDetails.totalCost} {isNativeToken ? nativeCurrencySymbol : nativeCurrencySymbol} + {costDetails.totalSent} {tokenSymbol || 'Tokens'}</p>
+          </div>
+        )}
+
+        {!isNativeToken && !isApproved ? (
+          <button
+            className="approvebutton"
+            onClick={handleApprove}
+            disabled={!isConnected || loading || !recipientList}
+          >
+            {loading ? 'Approving...' : 'Approve Tokens'}
+          </button>
+        ) : (
+          <button
+            className="sendtoken"
+            onClick={async () => {
+              if (!isNativeToken) {
+                const hasAllowance = await checkAllowance();
+                if (!hasAllowance) {
+                  setIsApproved(false);
+                  setError('Insufficient allowance. Please approve again.');
+                  return;
                 }
+              }
+              handleMultisend();
+            }}
+            disabled={!isConnected || loading || !recipientList}
+          >
+            {loading ? 'Processing...' : 'Send Tokens'}
+          </button>
+        )}
 
-                // Sending Ether
-                const etherValues = parsedValues.map(value => value.toString());
-                const data = await writeContractAsync({
-                    ...contract,
-                    functionName: 'disperseEther',
-                    args: [recipients1, etherValues], // Pass recipients and ether values
-                    value: BigInt(recipients1.length) * 91000000000000n,
-                });
-                setDepositHash(data.hash);
-            } else {
-                // Validate token address
-                if (!tokenAddress || tokenAddress.trim() === '') {
-                    alert('Please enter a valid ERC-20 token address.');
-                    return;
-                }
+        {transactionDetails && (
+          <div className="transaction-details">
+            <h3>Transaction Summary</h3>
+            <p>Total Sent: {transactionDetails.totalSent} {isNativeToken ? nativeCurrencySymbol : tokenSymbol || 'Tokens'}</p>
+            <p>Admin Fee: {transactionDetails.adminFee} {nativeCurrencySymbol}</p>
+            <p>Recipients: {transactionDetails.recipientCount}</p>
+            <p>Remaining Balance: {remainingBalance} {isNativeToken ? nativeCurrencySymbol : tokenSymbol || 'Tokens'}</p>
+            <p>
+              Transaction Hash:{' '}
+              {transactionDetails.txHash ? (
+                <a href={transactionDetails.explorerUrl} target="_blank" rel="noopener noreferrer">
+                  {transactionDetails.txHash}
+                </a>
+              ) : (
+                'Not Available'
+              )}
+            </p>
+          </div>
+        )}
 
-                // Fetch token decimals (using read contract method)
-                const tokenContract = {
-                    address: tokenAddress,
-                    abi: erc20Abi,
-                };
+        {error && <div className="error"><p>{error}</p></div>}
+        {success && <div className="success"><p>{success}</p></div>}
+      </div>
+      {isConnected && (
+        <p className="connected-wallet">Connected Wallet: <strong>{userAddress}</strong></p>
+      )}
+    </div>
+  );
+};
 
-                let decimals = await readContract(config, {
-                    ...tokenContract,
-                    functionName: 'decimals',
-                    chainId: chain?.id
-                });
-
-                // Check if decimals is valid
-                if (decimals === undefined) {
-                    alert('Failed to fetch token decimals.');
-                    return;
-                }
-
-                // Ensure the deposit amount is a valid number and within limits
-                const parsedTokenAmount = parseFloat(depositAmount);
-                if (isNaN(parsedTokenAmount) || parsedTokenAmount <= 0) {
-                    alert('Please enter a valid token deposit amount');
-                    return;
-                }
-
-                // Approve token transfer
-                const approveData = await writeContractAsync({
-                    ...tokenContract,
-                    functionName: 'approve',
-                    args: [contract.address, parseUnits(depositAmount, decimals)],
-                });
-
-                // Sending ERC-20 tokens after approval
-                const tokenValues = parsedValues.map(value => value.toString());
-
-                const data = await writeContractAsync({
-                    ...contract,
-                    functionName: 'disperseTokenSimple',
-                    args: [tokenAddress, recipients1, tokenValues], // Correctly passing array of recipients and values
-                    value: BigInt(tokenValues.length) * 91000000000000n,
-                });
-                setDepositHash(data.hash);
-            }
-        } catch (error) {
-            const message = error.message || error.toString();
-            alert(message);
-            console.log('Error:', error);
-        }
-    };
-
-    return (
-        <div className="airdroppage">
-            <div className="container">
-                <h1>Multisender: The fastest way to send tokens in bulk</h1>
-                <div className='arbox'>
-                    <div className="ether">
-                        <input type="checkbox" checked={sendEther} onChange={handleSendEtherToggle} /> <label>Send BNB?</label>
-                    </div>
-                    <div className='row'>
-                        {step == 1 && <Step1 setStep={setStep} sendEther={sendEther} name={name} balance={balance} recipientsInput={recipientsInput} handleRecipientsInputChange={handleRecipientsInputChange} tokenAddress={tokenAddress} setTokenAddress={setTokenAddress} />}
-                        {step === 2 && (
-                            <Step2
-                                depositAmount={depositAmount}
-                                name={name}
-                                symbol={symbol}
-                                decimals={decimals}
-                                totalSupply={totalSupply}
-                                balance={balance}
-                                sendEther={sendEther}
-                                address={address}
-                                balanceWallet={balanceWallet}
-                                recipientsInput={recipientsInput}
-                                setStep={setStep}
-                                handleDeposit={handleDeposit}
-                            />
-                        )}
-                    </div>
-                </div>
-            </div>
-        </div >
-    );
-}
+export default Page;
