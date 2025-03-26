@@ -26,12 +26,13 @@ const Page = () => {
 
   const supportedChains = [
     { id: 56, name: 'Binance Smart Chain', nativeCurrency: 'BNB', multisenderAddress: '0x43924f32140b16a4cd2980471429733512da144f', explorerBaseUrl: 'https://bscscan.com' },
+ // { id: 97, name: 'BNB Testnet', nativeCurrency: 'tBNB', multisenderAddress: '0x7d208e1d8b5ac9b3299ae7319d4fdcda1c7581a9', explorerBaseUrl: 'https://testnet.bscscan.com' },
   ];
 
   const DEFAULT_CHAIN_ID = 56; // BNB Mainnet
 
-  const currentChain = supportedChains.find(chain => chain.id === chainId) || supportedChains[0]; // Default to BNB if chainId not found
-  const nativeCurrencySymbol = currentChain.nativeCurrency; // Will always be 'BNB'
+  const currentChain = supportedChains.find(chain => chain.id === chainId) || supportedChains[0];
+  const nativeCurrencySymbol = currentChain.nativeCurrency;
   const multisenderAddress = currentChain.multisenderAddress;
   const explorerBaseUrl = currentChain.explorerBaseUrl;
 
@@ -53,9 +54,10 @@ const Page = () => {
 
   const MAX_RECIPIENTS_PER_BATCH = 200;
 
-  // Switch to BNB Mainnet when wallet connects if not already on it
+  // Switch to BNB Mainnet only on initial connect
   useEffect(() => {
-    if (isConnected && chainId !== DEFAULT_CHAIN_ID) {
+    if (isConnected && !supportedChains.some(chain => chain.id === chainId)) {
+      // Switch to mainnet only if wallet is not on a supported chain
       switchChain({ chainId: DEFAULT_CHAIN_ID });
     }
   }, [isConnected, chainId, switchChain]);
@@ -139,9 +141,20 @@ const Page = () => {
 
   const estimateGas = async (signer, recipients, amounts, totalValue, adminFee) => {
     const multisenderContract = new ethers.Contract(multisenderAddress, multisenderAbi, signer);
-    return isNativeToken 
-      ? await multisenderContract.sendNative.estimateGas(recipients, amounts, { value: totalValue + adminFee })
-      : await multisenderContract.sendTokens.estimateGas(tokenAddress, recipients, amounts, { value: adminFee });
+    try {
+      return isNativeToken
+        ? await multisenderContract.sendNative.estimateGas(recipients, amounts, { value: totalValue + adminFee })
+        : await multisenderContract.sendTokens.estimateGas(tokenAddress, recipients, amounts, { value: adminFee });
+    } catch (err) {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const nativeBalance = await provider.getBalance(userAddress);
+      if (isNativeToken && nativeBalance < (totalValue + adminFee)) {
+        throw new Error(`Insufficient ${nativeCurrencySymbol} balance. Required: ${ethers.formatEther(totalValue + adminFee)} ${nativeCurrencySymbol} for amount + admin fee`);
+      } else if (!isNativeToken && nativeBalance < adminFee) {
+        throw new Error(`Insufficient ${nativeCurrencySymbol} balance. Required: ${ethers.formatEther(adminFee)} ${nativeCurrencySymbol} for admin fee`);
+      }
+      throw err;
+    }
   };
 
   const fetchAdminFee = async () => {
@@ -179,13 +192,30 @@ const Page = () => {
       if (!isNativeToken) {
         const hasAllowance = await checkAllowance();
         if (!hasAllowance) {
-          setError('Insufficient allowance. Please approve the token first.');
+          setError(`Insufficient allowance for ${tokenSymbol || 'token'}. Please approve at least ${ethers.formatUnits(total, tokenDecimals || 18)} ${tokenSymbol || 'tokens'}`);
           return;
         }
       }
 
+      const nativeBalance = await provider.getBalance(userAddress);
+      if (isNativeToken && nativeBalance < (total + adminFee)) {
+        setError(`Insufficient ${nativeCurrencySymbol} balance. Required: ${ethers.formatEther(total + adminFee)} ${nativeCurrencySymbol} for amount + admin fee`);
+        return;
+      } else if (!isNativeToken && nativeBalance < adminFee) {
+        setError(`Insufficient ${nativeCurrencySymbol} balance. Required: ${ethers.formatEther(adminFee)} ${nativeCurrencySymbol} for admin fee`);
+        return;
+      }
+
       const gasEstimate = await estimateGas(signer, recipients, amounts, total, adminFee);
       const gasCost = gasEstimate * gasPrice;
+
+      if (isNativeToken && nativeBalance < (total + adminFee + gasCost)) {
+        setError(`Insufficient ${nativeCurrencySymbol} balance. Required: ${ethers.formatEther(total + adminFee + gasCost)} ${nativeCurrencySymbol} for amount + admin fee + gas`);
+        return;
+      } else if (!isNativeToken && nativeBalance < (adminFee + gasCost)) {
+        setError(`Insufficient ${nativeCurrencySymbol} balance. Required: ${ethers.formatEther(adminFee + gasCost)} ${nativeCurrencySymbol} for admin fee + gas`);
+        return;
+      }
 
       setCostDetails({
         totalSent: isNativeToken ? ethers.formatEther(total) : ethers.formatUnits(total, tokenDecimals || 18),
@@ -194,13 +224,7 @@ const Page = () => {
         totalCost: isNativeToken ? ethers.formatEther(total + adminFee + gasCost) : ethers.formatEther(adminFee + gasCost),
       });
     } catch (err) {
-      if (err.reason === 'ERC20: insufficient allowance') {
-        setError('Insufficient allowance. Please approve the token first.');
-      } else if (err.code === 'CALL_EXCEPTION') {
-        setError('Failed to estimate gas cost. Please check your inputs or network.');
-      } else {
-        setError('Failed to calculate cost: ' + err.message);
-      }
+      setError(err.message || 'An unexpected error occurred. Please try again.');
     }
   };
 
@@ -227,6 +251,7 @@ const Page = () => {
 
       const allowance = await tokenContract.allowance(userAddress, multisenderAddress);
       if (allowance < total) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const approveTx = await tokenContract.approve(multisenderAddress, total);
         await approveTx.wait();
         setIsApproved(true);
@@ -238,7 +263,11 @@ const Page = () => {
       await calculateCost();
     } catch (err) {
       console.error("Approval error:", err);
-      setError('Approval failed: ' + err.message);
+      if (err.code === -32603 && err.message.includes('already pending')) {
+        setError('A transaction is already pending. Please wait for it to complete or clear it in your wallet.');
+      } else {
+        setError('Approval failed: ' + (err.message || 'Transaction rejected or insufficient funds'));
+      }
     } finally {
       setLoading(false);
     }
@@ -266,13 +295,15 @@ const Page = () => {
       const gasPrice = ethers.parseUnits("5", "gwei");
       const adminFee = await fetchAdminFee();
 
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       if (isNativeToken) {
         const balance = await provider.getBalance(userAddress);
         const gasEstimate = await estimateGas(signer, recipients, amounts, total, adminFee);
         const gasCost = gasEstimate * gasPrice;
         const totalCost = total + adminFee + gasCost;
 
-        if (balance < totalCost) throw new Error(`Insufficient balance. Required: ${ethers.formatEther(totalCost)} ${nativeCurrencySymbol}`);
+        if (balance < totalCost) throw new Error(`Insufficient ${nativeCurrencySymbol} balance. Required: ${ethers.formatEther(totalCost)} ${nativeCurrencySymbol} for amount + admin fee + gas`);
 
         const multisenderContract = new ethers.Contract(multisenderAddress, multisenderAbi, signer);
         const tx = await multisenderContract.sendNative(recipients, amounts, { 
@@ -280,10 +311,7 @@ const Page = () => {
           gasLimit: gasEstimate * BigInt(12) / BigInt(10),
           gasPrice
         });
-        console.log("Transaction sent, hash:", tx.hash);
         const receipt = await tx.wait();
-        console.log("Transaction receipt:", receipt);
-
         if (receipt.status === 0) throw new Error('Transaction reverted.');
 
         const newBalance = await provider.getBalance(userAddress);
@@ -303,13 +331,13 @@ const Page = () => {
         const decimals = await tokenContract.decimals();
         const tokenBalance = await tokenContract.balanceOf(userAddress);
 
-        if (tokenBalance < total) throw new Error(`Insufficient token balance. Required: ${ethers.formatUnits(total, decimals)} ${tokenSymbol || 'Tokens'}`);
+        if (tokenBalance < total) throw new Error(`Insufficient ${tokenSymbol || 'token'} balance. Required: ${ethers.formatUnits(total, decimals)} ${tokenSymbol || 'tokens'}`);
 
         const nativeBalance = await provider.getBalance(userAddress);
         const gasEstimate = await estimateGas(signer, recipients, amounts, 0, adminFee);
         const gasCost = gasEstimate * gasPrice;
 
-        if (nativeBalance < (adminFee + gasCost)) throw new Error(`Insufficient ${nativeCurrencySymbol} for fee and gas: ${ethers.formatEther(adminFee + gasCost)}`);
+        if (nativeBalance < (adminFee + gasCost)) throw new Error(`Insufficient ${nativeCurrencySymbol} balance. Required: ${ethers.formatEther(adminFee + gasCost)} ${nativeCurrencySymbol} for admin fee + gas`);
 
         const multisenderContract = new ethers.Contract(multisenderAddress, multisenderAbi, signer);
         const tx = await multisenderContract.sendTokens(tokenAddress, recipients, amounts, {
@@ -317,10 +345,7 @@ const Page = () => {
           gasLimit: gasEstimate * BigInt(12) / BigInt(10),
           gasPrice
         });
-        console.log("Transaction sent, hash:", tx.hash);
         const receipt = await tx.wait();
-        console.log("Transaction receipt:", receipt);
-
         if (receipt.status === 0) throw new Error('Transaction reverted.');
 
         const newTokenBalance = await tokenContract.balanceOf(userAddress);
@@ -339,7 +364,11 @@ const Page = () => {
       }
     } catch (err) {
       console.error("Transaction error:", err);
-      setError(err.message || 'An error occurred during the transaction.');
+      if (err.code === -32603 && err.message.includes('already pending')) {
+        setError('A transaction is already pending in your wallet. Please wait for it to complete or clear it before trying again.');
+      } else {
+        setError(err.message || 'An unexpected error occurred during the transaction.');
+      }
       if (err.transactionHash) {
         setTransactionDetails({
           totalSent: totalAmount,
@@ -369,8 +398,14 @@ const Page = () => {
           <label className="label">Select Blockchain</label>
           <select
             className="select"
-            value={chainId || DEFAULT_CHAIN_ID} // Default to 56
-            onChange={(e) => switchChain({ chainId: parseInt(e.target.value) })}
+            value={chainId || DEFAULT_CHAIN_ID}
+            onChange={(e) => {
+              const newChainId = parseInt(e.target.value);
+              switchChain({ chainId: newChainId })
+                .catch((err) => {
+                  setError(`Failed to switch to ${supportedChains.find(c => c.id === newChainId)?.name || 'selected chain'}. Please add it to your wallet.`);
+                });
+            }}
             disabled={!isConnected}
           >
             {supportedChains.map((chain) => (
@@ -459,7 +494,7 @@ const Page = () => {
                 const hasAllowance = await checkAllowance();
                 if (!hasAllowance) {
                   setIsApproved(false);
-                  setError('Insufficient allowance. Please approve again.');
+                  setError(`Insufficient allowance for ${tokenSymbol || 'token'}. Please approve at least ${ethers.formatUnits(parseRecipients().total, tokenDecimals || 18)} ${tokenSymbol || 'tokens'}`);
                   return;
                 }
               }

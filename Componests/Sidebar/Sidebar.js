@@ -49,6 +49,24 @@ export default function Sidebar() {
     </li>
 
     <li className="menu-item">
+      <Link href="/create-lock">
+      <span className="icon">
+      <i className="fa fa-lock"></i>
+      </span>
+      <span className="label">Create Lock</span>
+      </Link>
+    </li>
+
+    <li className="menu-item">
+      <Link href="/lock-list">
+      <span className="icon">
+      <i className="fa fa-list"></i>
+      </span>
+      <span className="label">Lock list</span>
+      </Link>
+    </li>
+
+    <li className="menu-item">
       <Link href="/tools/multi-chain-balance-checker">
       <span className="icon">
       <i className="fa fa-check-circle"></i>

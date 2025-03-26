@@ -12818,9 +12818,9 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
 .createbtns button{background: #0080ff !important; border: none !important; padding: 9px 22px !important;
     border-radius: 5px !important; color: #fff !important; font-weight: 600 !important;  font-size: 18px !important; height: 46px !important;}
 	
-.Balancechecker{padding:40px 0 70px; background: linear-gradient(1deg, #e3e3e3, #edeff3) !important;}
+.Balancechecker{padding:40px 0 70px; background:#f0f4fd !important;}
 .Balancechecker h1{ font-weight:700;}
-.Balancecheckerformbox{ width:100%; margin:0 auto; background:#fff; border-radius:10px; padding:20px;box-shadow: rgb(211, 211, 211) 1px 1px 10px; border-radius: 10px;    margin-top: 40px;}
+.Balancecheckerformbox{ width:100%; margin:0 auto; background:#fff; border-radius:10px; padding:40px;box-shadow: rgb(211, 211, 211) 1px 1px 10px; border-radius: 10px;    margin-top: 40px;}
 .Balancecheckerformbox input{width: 100%; border: 1px solid #adb8d3; padding:8px; border-radius:6px; }
 .Balancecheckerformbox .grid-item {
     padding: 15px;
@@ -12839,7 +12839,7 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
 .balance{font-size: 14px; color: #7c7c7c; margin-bottom:0px;}
 .Balancecheckerformbox hr{opacity: .1; margin-top: 24px; margin-bottom: 10px;}
 .subtexts{padding-right: 15px;}
-.chainslist{ background:#e0f4ff;}
+.chainslist{ background:#f0f4fd; padding-top:50px;}
 .chainslist h1{ font-weight:700;}
 .has-search .form-control {
     padding-left:50px;
@@ -12872,7 +12872,7 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
     margin-top:10px;
 }
 .metamaskbutton{ float:right;    margin-top:0px;}
-.metamaskbutton button{border-radius:10px; border:2px solid #d9e0f1; padding:12px 15px;}
+.metamaskbutton button{border-radius:10px; border:2px solid #d9e0f1; padding:12px 14px;}
 .metamaskbutton button:hover{ background:#0080ff !important; border:2px solid #0080ff; color:#fff !important;}
 .lts span{ display:inline-block; text-align:center; }
 .lts .bg1{ background:#e6ebf9; padding: 5px 15px; border-radius: 10px 0px 0px 10px;color:#000; font-weight:600;    font-size: 14px;}
@@ -12884,7 +12884,7 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
 .logodiv span{ font-size: 20px; line-height: 56px; font-weight: 500;}
 .logodiv{ margin-top:-5px;}
 .banner img{ border-radius:10px; margin-bottom:50px;}
-.airdroppage{background:url(../public/assets/images/airdropbackground.png) top #e8f8ff;  padding-top:50px;     padding: 50px 90px 80px;}
+.airdroppage{background:url(../public/assets/images/airdropbackground.png) top #f0f4fd;  padding-top:50px;     padding: 50px 90px 80px;}
 .ardbox{ background:#fff; padding:20px; text-align:center; margin-bottom:10px; border-radius:10px;    box-shadow: 1px 5px 7px #d9e6eb;}
 .ardbox ul{ padding-left:0px;}
 .ardbox ul li{ display:inline-block; margin-right: 10px;}
@@ -13099,7 +13099,11 @@ canvas{ margin-top: -150px; height: 620px; width:100%; }
 .sendtoken{ background:#000 !important;     box-shadow: 1px 3px 13px #b0b6bb !important; margin-top:20px !important;}
 .Maximumbox{ background:#fff; padding:20px; border-radius:20px; margin-bottom:20px !important;}
 .Maximumbox p{ margin-bottom:8px;}
-
+.maindiv{background: #f0f4fd !important;}
+.creatlock{box-shadow: 0 1rem 3rem #9d9d9d2d !important; padding:40px !important; border-radius:20px !important; margin-bottom:80px !important; margin-top:80px !important;}
+.creatlock button{ float:left !important;}
+.creatlock h2{ font-size:35px !important;}
+.clbtn{ margin-right:5px !important; margin-bottom:20px !important;}
 
 
 
@@ -13431,3 +13435,12 @@ footer h5 {margin-bottom: 10px !important;}
   border-radius: 4px;
 }
 /* Multisendar */
+
+.locklist{padding:80px 0px;}
+.locklist select{ margin-bottom:20px; margin-right: 10px;}
+table{ background:#fff; width:100%; margin:20px 0px;}
+table tr{border:1px solid #ddd; }
+table tr th{padding:10px;border:1px solid #ddd;}
+table tr td{ border:1px solid #ddd; padding:10px;}
+thead{background: #e0f1ff;}
+.GetStarted button{ margin-top:20px;}
