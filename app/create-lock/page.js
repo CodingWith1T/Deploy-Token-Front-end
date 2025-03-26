@@ -416,7 +416,7 @@ const LockCreate = () => {
                             max={maxTime}
                             onChange={(e) => handleTgeDate(e.target.value)}
                         />
-                        {tgeDateError !== 'null' && <Form.Text className="text-danger">{tgeDateError}</Form.Text>}
+                        {tgeDateError !== 'null' && <span className="text-danger">{tgeDateError}</span>}
                         <Input
                             label={`TGE Percent*`}
                             type={"number"}

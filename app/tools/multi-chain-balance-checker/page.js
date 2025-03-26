@@ -157,24 +157,24 @@ const MultiChainBalanceChecker = () => {
                         <hr></hr>
                     </div>
 
-                    {loading && <>
-                        <div className="loader"></div>
-                    </>}
-                    {error && <p className="error-text">{error}</p>}
-
                     <div className="grid-container">
                         {Object.entries(balances).map(([chain, { name, balance, balanceInUSD, logo }]) => (
                             <div className="grid-item" key={chain}>
                                 <img src={`/assets/images/${logo}`} alt={name} className="w-6 h-6" />
                                 <h3 className="chain-name">{name}</h3>
-                                <p className="balance">
-                                    {balance.toFixed(4)}
-                                    (${balanceInUSD.toFixed(2)})
-                                </p>
+                                {loading ? (
+                                    <div className="loader"></div>
+                                ) : (
+                                    <p>
+                                        {balance.toFixed(4)} (${balanceInUSD.toFixed(2)})
+                                    </p>
+                                )}
+
                             </div>
                         ))}
                         <div className='clearfix'></div>
                     </div>
+                    {error && <p className="error-text">{error}</p>}
                     <div className='clearfix'></div>
                 </div>
                 <div className='clearfix'></div>

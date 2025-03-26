@@ -13293,8 +13293,9 @@ footer h5 {margin-bottom: 10px !important;}
 }
 /* HTML: <div class="loader"></div> */
 .loader {
-  height: 150px;
-  width: 120px;
+  height: 50px;
+  margin-left: 55px;
+  width: 20px;
   aspect-ratio: 4;
   background: radial-gradient(circle closest-side,#0d6efd 90%,#0000) 0/calc(100%/3) 100% space;
   clip-path: inset(0 100% 0 0);
