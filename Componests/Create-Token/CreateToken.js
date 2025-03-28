@@ -146,8 +146,26 @@ export default function CreateToken({ token }) {
     const [isCheckedBurn, setIsCheckedBurn] = useState(false);
     const [isCheckedPausing, setIsCheckedPausing] = useState(false);
     const [isCheckedBlacklist, setIsCheckedBlacklist] = useState(false);
+    const [isCheckedChargeTex, setIsCheckedChargeTex] = useState(false);
     const [isCheckedCapped, setIsCheckedCapped] = useState(false);
     const [Decimals, setDecimals] = useState(18);
+    const [taxFeeReceive, setTaxFeeReceive] = useState('');
+    const [taxFeeReceiverAddress, setTaxFeeReceiverAddress] = useState('');
+
+    // Update the chain fee whenever chain or other relevant states change
+    useEffect(() => {
+        if (chain?.id) {
+            setFee(
+                parseFloat(
+                    (creationFee[chain?.id] +
+                        utilitiesFee[chain?.id] *
+                        (Number(isCheckedBurn) + Number(isCheckedCapped) + Number(isCheckedMint) + Number(isCheckedPausing) + Number(isCheckedBlacklist) + Number(isCheckedChargeTex))
+                    ).toFixed(5)
+                )
+            );
+        }
+    }, [chain, isCheckedBurn, isCheckedCapped, isCheckedMint, isCheckedPausing, isCheckedBlacklist, isCheckedChargeTex]);
+
 
     const handleTokenNameChange = (e) => {
         setTokenName(e.target.value);
@@ -159,6 +177,14 @@ export default function CreateToken({ token }) {
 
     const handleTokenInitialChange = (e) => {
         setTokenInitial(Number(e.target.value));  // Ensure the value is a number
+    };
+
+    const handleTokenTaxFeeReceiveChange = (e) => {
+        setTaxFeeReceive(e.target.value);  // Ensure the value is a number
+    };
+
+    const handleTokenTaxFeeReceiverAddressChange = (e) => {
+        setTaxFeeReceiverAddress(e.target.value);  // Ensure the value is a number
     };
 
     const handleCappedChange = (e) => {
@@ -190,6 +216,10 @@ export default function CreateToken({ token }) {
 
     const handleToggleBlacklist = () => {
         setIsCheckedBlacklist((prev) => !prev);
+    };
+
+    const handleToggleChargeTex = () => {
+        setIsCheckedChargeTex((prev) => !prev);
     };
 
     const handleRangeChange = (e) => {
@@ -469,26 +499,14 @@ export default function CreateToken({ token }) {
         }
     }, [hash]);
 
-    // Update the chain fee whenever chain or other relevant states change
-    useEffect(() => {
-        if (chain?.id) {
-            setFee(
-                parseFloat(
-                    (creationFee[chain?.id] +
-                        utilitiesFee[chain?.id] *
-                        (Number(isCheckedBurn) + Number(isCheckedCapped) + Number(isCheckedMint) + Number(isCheckedPausing) + Number(isCheckedBlacklist))
-                    ).toFixed(5)
-                )
-            );
-        }
-    }, [chain, isCheckedBurn, isCheckedCapped, isCheckedMint, isCheckedPausing, isCheckedBlacklist]);
 
     return (
         <main className="tokenformmain  mntoken flex flex-col items-center justify-between space-y-4 pt-10 ">
             <div className='container tokencontainer'>
                 <div className='Createtheading'>
                     <h1>Create Token on {chain?.name || token}</h1>
-                    <p>Instantly create your token on the {chain?.name || token} blockchain with
+                    <p>
+                        Instantly create your token on the {chain?.name || token} blockchain with
                         DeployTokens.com, the ultimate Token Generator.
                         No coding required – launch secure, affordable, and
                         customizable tokens in just a few clicks. Start your
@@ -502,7 +520,9 @@ export default function CreateToken({ token }) {
                         </div>
                     </div>
                     <div className="col-xl-4 chainbox">
+
                         <ul className="space-y-2">
+
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'ETH Smart Chain' ? 'border-[10px] border-white' : ''}`}
                                 onClick={() => handleChainClick('1', 'Ethereum')}>
                                 <img src="/assets/images/1-DLc6yFb9.png" alt="bnb" className="w-6 h-6" />
@@ -534,70 +554,54 @@ export default function CreateToken({ token }) {
                                 <img src="/assets/images/Avalanche.png" alt="op" className="w-6 h-6" />
                                 <span>Avalanche</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Alvey' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('3797', 'Alvey')}>
                                 <img src="/assets/images/alvay.webp" alt="Alvey" className="w-6 h-6" />
                                 <span>Alvey</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Soneium' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('1868', 'Soneium')}>
                                 <img src="/assets/images/soneium.png" alt="Soneium" className="w-6 h-6" />
                                 <span>Soneium</span>
                             </li>
-
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Core' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('1116', 'Core')}>
                                 <img src="/assets/images/Core.png" alt="Core" className="w-6 h-6" />
                                 <span>Core</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Blast' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('81457', 'Blast')}>
                                 <img src="/assets/images/chain_img/blast.png" alt="Blast" className="w-6 h-6" />
                                 <span>Blast</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'opBNB' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('204', 'Opbnb')}>
                                 <img src="/assets/images/chain_img/opbnb.png" alt="opBNB" className="w-6 h-6" />
                                 <span>opBNB</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'ZkSync' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('324', 'ZkSync')}>
                                 <img src="/assets/images/ZkSync.png" alt="ZkSync" className="w-6 h-6" />
                                 <span>ZkSync</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Mantle' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('5000', 'Mantle')}>
                                 <img src="/assets/images/Mantle.png" alt="Mantle" className="w-6 h-6" />
                                 <span>Mantle</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Sonic' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('146', 'Sonic')}>
                                 <img src="/assets/images/Sonic.png" alt="Sonic" className="w-6 h-6" />
                                 <span>Sonic</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Pulsechain' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('369', 'Pulsechain')}>
                                 <img src="/assets/images/Pulsechain.png" alt="Pulsechain" className="w-6 h-6" />
                                 <span>Pulsechain</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Abstract' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('2741', 'Abstract')}>
                                 <img src="/assets/images/Abstract.png" alt="Abstract" className="w-6 h-6" />
                                 <span>Abstract</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Linea' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('59144', 'Linea')}>
                                 <img src="/assets/images/Linea.png" alt="Linea" className="w-6 h-6" />
                                 <span>Linea</span>
                             </li>
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Unichain' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('130', 'Unichain')}>
                                 <img src="/assets/images/unichain.webp" alt="Linea" className="w-6 h-6" />
                                 <span>Unichain</span>
                             </li>
-
-
-
                             <li className={`border-[0.5px] border-black rounded-lg p-3 hover:bg-gray-200 cursor-pointer flex items-center space-x-2 ${chain?.name === 'Binance Smart Chain Testnet' ? 'border-[10px] border-white' : ''}`} onClick={() => handleChainClick('97', 'Binance Smart Chain Testnet')}>
                                 <img src="/assets/images/chain_img/bnb.png" alt="BNB" className="w-6 h-6" />
                                 <span>BNBTestnet</span>
@@ -606,7 +610,9 @@ export default function CreateToken({ token }) {
                                 <img src="/assets/images/sepolia-DY1y1bSg.png" alt="sepolia" className="w-6 h-6" />
                                 <span>Sepolia</span>
                             </li>
+
                         </ul>
+
                     </div>
                     <div className="col-xl-8 createtoken">
                         <div className="firstform rounded-xl border bg-card text-card-foreground shadow-sm w-full">
@@ -625,7 +631,6 @@ export default function CreateToken({ token }) {
                                             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Token Symbol :</label>
                                         </div>
                                         <div className="col-xl-9">
-
                                             <input type="text" className="flex w-full text-sm outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:bg-transparent" placeholder="e.g. NMT" autoComplete="off" onChange={handleTokenSymbolChange} />
                                         </div>
                                     </div>
@@ -638,6 +643,7 @@ export default function CreateToken({ token }) {
                                             <input type="number" className="flex w-full text-sm outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:bg-transparent" id="initial-supply" min="0" step="1" max="Infinity" value={tokenInitial} onChange={handleTokenInitialChange} />
                                         </div>
                                     </div>
+
                                     {isCheckedCapped &&
                                         <div className="space-y-2 row">
                                             <div className="col-xl-3">
@@ -669,6 +675,30 @@ export default function CreateToken({ token }) {
                                             </div>
                                         </div>
                                     </div>
+
+                                    {isCheckedChargeTex &&
+                                        <>
+                                            <div className="space-y-2 row">
+                                                <div className="col-xl-3">
+                                                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Recipient address:</label>
+                                                </div>
+                                                <div className="col-xl-9">
+                                                    <input type="text" className="flex w-full text-sm outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:bg-transparent" placeholder='e.g. 0x...' id="initial-supply" onChange={handleTokenTaxFeeReceiverAddressChange} />
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-2 row">
+                                                <div className="col-xl-3">
+                                                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Tax / fee on transfer in basis points (bps)</label>
+                                                </div>
+                                                <div className="col-xl-9">
+                                                    <input type="number" className="flex w-full text-sm outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:bg-transparent" placeholder='e.g. 100' id="initial-supply" onChange={handleTokenTaxFeeReceiveChange} />
+                                                    <p>i.e. 1% is equal to 100 bps. Example: to charge a tax / fee of 3.5%, enter the number 350.</p>
+                                                </div>
+                                            </div>
+                                        </>
+                                    }
+
                                 </div>
                             </div>
                         </div>
@@ -676,10 +706,6 @@ export default function CreateToken({ token }) {
                             <div className="p-4 otherconfig">
                                 <h4>Other Config : </h4>
                                 <ul>
-                                    {/* <li>
-                                    <input type="checkbox" checked="checked" id="Standard" name="Standard" value="Standard" />
-                                    <label htmlFor="vehicle1"> Standard</label>
-                                </li> */}
                                     <li>
                                         <input type="checkbox" id="Mint- cap" onClick={handleToggleMint} name="Mint- cap" value="Mint- cap" />
                                         <label htmlFor="Mint- cap"> Can Mint &nbsp; <span>(Allows additional token minting after the initial creation) </span></label>
@@ -701,6 +727,12 @@ export default function CreateToken({ token }) {
                                         <label htmlFor="Mint- cap"> Blacklist  &nbsp; <span>(Allows blacklisting of malicious accounts.) </span></label>
                                     </li>
 
+                                    <li>
+                                        <input type="checkbox" id="Mint- cap" onClick={handleToggleChargeTex} name="Mint- cap" value="Mint- cap" />
+                                        <label htmlFor="Mint- cap"> Charge Transaction Tax / Fee  &nbsp; <span>(If enabled, a portion of the transfer will go to the fee wallet.)</span>
+                                        </label>
+                                    </li>
+                                    {isCheckedChargeTex && <span>Cannot be deactivated after token creation</span>}
                                 </ul>
                             </div>
                         </div>

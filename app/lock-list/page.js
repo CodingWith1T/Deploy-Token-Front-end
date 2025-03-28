@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { multicall, readContract } from "@wagmi/core";
 import { config as wagmiconfig } from "../../wagmi";
-import erc20Abi from "../../config/helper/erc20.json";
-import lockAbi from "../../config/helper/lock.json";
+import erc20Abi from "./erc20.json";
+import lockAbi from "./lock.json";
 import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 

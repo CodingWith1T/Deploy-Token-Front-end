@@ -13293,9 +13293,8 @@ footer h5 {margin-bottom: 10px !important;}
 }
 /* HTML: <div class="loader"></div> */
 .loader {
-  height: 50px;
-  margin-left: 55px;
-  width: 20px;
+  height: 150px;
+  width: 120px;
   aspect-ratio: 4;
   background: radial-gradient(circle closest-side,#0d6efd 90%,#0000) 0/calc(100%/3) 100% space;
   clip-path: inset(0 100% 0 0);
@@ -13445,3 +13444,46 @@ table tr th{padding:10px;border:1px solid #ddd;}
 table tr td{ border:1px solid #ddd; padding:10px;}
 thead{background: #e0f1ff;}
 .GetStarted button{ margin-top:20px;}
+
+.maindivs{ padding:50px 20px;}
+.maindivs h1{ text-align:center; font-weight:800;}
+.maindivs p{ text-align:center; padding:0px 150px; font-size:18px;}
+.forms{ background:#fff; padding:40px; width:70%; margin:0 auto; margin-top:50px;}
+.forms select{ border:1px solid #cbd4e1; padding:8px 5px; width:100%; border-radius:5px; margin-bottom:15px;}
+.forms input{border:1px solid #cbd4e1; padding:8px 5px; width:100%; border-radius:5px;}
+.forms label{ font-weight:600; margin-bottom:5px;}
+
+.tokenbadge{padding:50px;}
+.tokenbadge select{padding:8px 10px; border:1px solid #ddd; width:200px; border:1px solid #ddd;    border-radius: 5px; margin-right:15px;     box-shadow: 1px 1px 6px #d6e2e7; margin-left: 5px;  margin-bottom: 30px;}
+.tokenbadge input{padding:8px 10px; border:1px solid #ddd; width:60%; border:1px solid #ddd;    border-radius: 5px; margin-right:15px; margin-left:10px;    box-shadow: 1px 1px 6px #d6e2e7;}
+.tokenbadge button{background: #0080ff !important; padding: 8px 15px; color: #fff; border-radius: 5px; box-shadow: 1px 1px 6px #bbbbbb;}
+
+.tokenbadge h1{ font-size:28px; margin-bottom:20px; font-weight:600;}
+
+.badgebox{background: #fff; padding: 20px 0px 12px; box-shadow: 1px 6px 10px #e6e9ef; border-radius: 10px;border: 2px solid #c0c8d5;}
+.badgebox img{width:60px; float:left;border-radius: 50px;}
+.badgebox p .tokenname{ font-size:22px; margin-left:10px; font-weight:600;color:rgb(16, 112, 224);}
+.badgebox p .tokennamesymbl{ font-size:18px; margin-left:10px; font-weight:400; color:rgb(16, 112, 224);}
+.badgeboxdiv{ padding:0px;}
+.badgebox ul {padding: 0; margin: 0;  padding-bottom: 6px; padding-top: 6px;background:#e7eef7; padding: 12px 15px;}
+.badgebox ul li{ width:30%; display: inline-grid; margin-right:10px;}
+.badgebox ul li span{ font-size:12px;}
+.badgebox ul li h4{ font-size:16px;}
+.powerdby {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    font-size: 13px;
+    font-style: italic;
+    color: #1070e0;
+    text-align: center;
+    margin-top: 36px;
+    border-top:1px solid #c3cddb;
+    padding-top: 11px;
+}
+.price{ margin-left:10px;    font-weight: 600;}
+.price b{ color:#d94040; font-weight: 500; font-size: 18px;}
+.price strong{ font-size:14px !important; font-weight:500;margin-right: 5px;}
+.tokendiv{ padding:0px 15px;}
+.decimal{ float:left; margin-left:15px;font-size: 14px;    padding: 8px 0px;}
+.holders{ float:right; margin-right:15px;font-size: 14px;    padding: 8px 0px;}
+

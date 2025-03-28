@@ -3,14 +3,47 @@ import React, { useState, useEffect } from "react";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { multicall } from "@wagmi/core";
 import { config as wagmiconfig } from "../../wagmi";
-import erc20Abi from "../../config/helper/erc20.json";
-import lockAbi from "../../config/helper/lock.json";
-import lptokenAbi from "../../config/helper/lptoken.json";
+import erc20Abi from "./erc20.json";
+import lockAbi from "./lock.json";
+import lptokenAbi from "./lptoken.json";
 import { VerifyToken } from '../../Componests/VerifyToken/VerifyToken';
 import Link from "next/link";
 import { waitForTransactionReceipt } from "@wagmi/core";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import FormButton from "../../Componests/FormButton/FormButton";
+
+const FormButton = ({ onClick, href, disabled, buttonName }) => {
+    const { isConnected } = useAccount();
+
+    const getButtonStyle = () => {
+        if (buttonName === 'Approve') return 'bg-red-500 hover:bg-red-600';
+        if (buttonName === 'Previous') return 'bg-gray-500 hover:bg-gray-600';
+        return 'bg-blue-500 hover:bg-blue-600';
+    };
+
+    return isConnected ? (
+        href ? (
+            
+            <a
+                href={href}
+                className={`clbtn inline-block px-4 py-2 text-white font-medium rounded-md ${getButtonStyle()} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+                {buttonName}
+            </a>
+        ) : (
+            <div className="lbtnbox">
+            <button
+                onClick={onClick}
+                disabled={disabled}
+                className={`clbtn px-4 py-2 text-white font-medium rounded-md ${getButtonStyle()} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+                {buttonName}
+            </button>
+            </div>
+        )
+    ) : (
+        <ConnectButton />
+    );
+};
 
 const locker = {
     '11155111': '0x7AF39aC33c2a873E81A754c4B292B8a537bBeDc4',
@@ -416,7 +449,7 @@ const LockCreate = () => {
                             max={maxTime}
                             onChange={(e) => handleTgeDate(e.target.value)}
                         />
-                        {tgeDateError !== 'null' && <span className="text-danger">{tgeDateError}</span>}
+                        {tgeDateError !== 'null' && <Form.Text className="text-danger">{tgeDateError}</Form.Text>}
                         <Input
                             label={`TGE Percent*`}
                             type={"number"}
