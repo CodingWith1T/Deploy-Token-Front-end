@@ -13453,37 +13453,68 @@ thead{background: #e0f1ff;}
 .forms input{border:1px solid #cbd4e1; padding:8px 5px; width:100%; border-radius:5px;}
 .forms label{ font-weight:600; margin-bottom:5px;}
 
-.tokenbadge{padding:50px;}
-.tokenbadge select{padding:8px 10px; border:1px solid #ddd; width:200px; border:1px solid #ddd;    border-radius: 5px; margin-right:15px;     box-shadow: 1px 1px 6px #d6e2e7; margin-left: 5px;  margin-bottom: 30px;}
+.tokenbadge{padding:50px 50px 80px;}
+.tokenbadge select{padding:8px 10px; border:1px solid #ddd; width:200px; border:1px solid #ddd;    border-radius: 5px; margin-right:15px; box-shadow: 1px 1px 6px #d6e2e7; margin-left: 5px;  margin-bottom:60px;}
 .tokenbadge input{padding:8px 10px; border:1px solid #ddd; width:60%; border:1px solid #ddd;    border-radius: 5px; margin-right:15px; margin-left:10px;    box-shadow: 1px 1px 6px #d6e2e7;}
 .tokenbadge button{background: #0080ff !important; padding: 8px 15px; color: #fff; border-radius: 5px; box-shadow: 1px 1px 6px #bbbbbb;}
 
 .tokenbadge h1{ font-size:28px; margin-bottom:20px; font-weight:600;}
 
-.badgebox{background: #fff; padding: 20px 0px 12px; box-shadow: 1px 6px 10px #e6e9ef; border-radius: 10px;border: 2px solid #c0c8d5;}
-.badgebox img{width:60px; float:left;border-radius: 50px;}
-.badgebox p .tokenname{ font-size:22px; margin-left:10px; font-weight:600;color:rgb(16, 112, 224);}
-.badgebox p .tokennamesymbl{ font-size:18px; margin-left:10px; font-weight:400; color:rgb(16, 112, 224);}
+.badgebox{background: #fff; padding: 20px 0px 12px; box-shadow: 1px 6px 10px #e6e9ef; border-radius: 10px;border: 2px solid #cbd6e7;}
+.badgebox img{width:60px; float:left;border-radius: 50px;    margin-top: 4px;}
+.badgebox p .tokenname{ font-size:24px; margin-left:10px; font-weight:600;color:rgb(16, 112, 224);}
+.badgebox p .tokennamesymbl{ font-size:18px; margin-left:5px; font-weight:400; color:rgb(16, 112, 224);}
 .badgeboxdiv{ padding:0px;}
-.badgebox ul {padding: 0; margin: 0;  padding-bottom: 6px; padding-top: 6px;background:#e7eef7; padding: 12px 15px;}
-.badgebox ul li{ width:30%; display: inline-grid; margin-right:10px;}
+.badgebox ul {padding: 0; margin: 0; background:#fff; border-top:1px solid #cbd6e7; border-bottom:1px solid #cbd6e7;}
+.badgebox ul li{ width:33%; display: inline-grid; border-right: 1px solid #cbd6e7; padding:15px 14px;}
+.badgebox ul li:nth-child(3){border-right:0px solid #cbd6e7;}
 .badgebox ul li span{ font-size:12px;}
-.badgebox ul li h4{ font-size:16px;}
+.badgebox ul li h4{ font-size:18px; margin-bottom:8px;}
 .powerdby {
     padding-bottom: 0;
     margin-bottom: 0;
-    font-size: 13px;
+    font-size: 14px;
     font-style: italic;
     color: #1070e0;
     text-align: center;
     margin-top: 36px;
-    border-top:1px solid #c3cddb;
+    border-top:1px solid #cbd6e7;
     padding-top: 11px;
 }
+.sidebarleftmenu .menu-item .label{margin-bottom: 0px;}
 .price{ margin-left:10px;    font-weight: 600;}
 .price b{ color:#d94040; font-weight: 500; font-size: 18px;}
 .price strong{ font-size:14px !important; font-weight:500;margin-right: 5px;}
-.tokendiv{ padding:0px 15px;}
+.tokendiv{ padding:0px 25px;}
 .decimal{ float:left; margin-left:15px;font-size: 14px;    padding: 8px 0px;}
 .holders{ float:right; margin-right:15px;font-size: 14px;    padding: 8px 0px;}
-
+.ticker input{ width:15px; float:right;    margin-top: 4px;}
+.ticker .flex {
+    display: flow-root;
+    width: 100%;
+    padding: 10px 0px;
+    /* border: 1px solid #fff; */
+    background: #ffffff;
+    margin-bottom: 11px;
+    padding: 10px 0px 10px 15px;
+    font-weight: 400;
+    font-size: 15px;
+    border-radius: 6px;
+    
+	border:2px solid #cbd6e7;
+}
+.ticker{ padding-right:40px;}
+.ticker .flex label{ font-size:18px;}
+.decimalmain{padding: 4px 0px;}
+.widgetbox {
+    background: #fff;
+    padding:14px 18px;
+    border: 2px solid #cbd6e7;
+    border-radius: 12px;
+	box-shadow: 1px 6px 10px #e6e9ef;
+}
+.Widgettitles{font-size:18px; margin-bottom:10px;}
+.Widgettitle{ margin-top:30px; font-size:18px;}
+.widgetbox .html{font-size: 14px;}
+.widgetbox .hljs-string{color: rgb(57, 97, 251);}
+.widgetbox .hljs-attr{color: rgb(234, 57, 67);}

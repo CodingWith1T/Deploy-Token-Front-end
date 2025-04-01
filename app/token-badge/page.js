@@ -18,8 +18,8 @@ const TokenBadge = () => {
         { "id": "pulsechain", "name": "PulseChain" },
         { "id": "linea", "name": "Linea" }
     ];
-    const [network, setNetwork] = useState("");
-    const [address, setAddress] = useState("");
+    const [network, setNetwork] = useState("bsc");
+    const [address, setAddress] = useState("0x2170Ed0880ac9A755fd29B2688956BD959F933F8");
     const [isValid, setIsValid] = useState(true);
     const [tokenData, setTokenData] = useState(null);
     const [tikckerSymbol, setTickerSymbol] = useState(true);  // Default to true (checked)
@@ -120,7 +120,41 @@ const TokenBadge = () => {
                 {tokenData && (
                     <div className='container badgeboxdiv'>
                         <div className='row'>
-                            <div className='col-md-4'>
+
+                        <div className='col-md-6 ticker'>
+
+                               <div className="flex">
+                                    <label>Show Primary Ticker Symbol?</label>
+                                    <input
+                                        type="checkbox"
+                                        checked={tikckerSymbol}  // Bind the checkbox to tikckerSymbol state
+                                        onChange={() => setTickerSymbol(prev => !prev)} // Toggle the state value
+                                        className="w-1/2 h-1/2 border rounded-full"
+                                    />
+                                </div>
+                                <div className="flex">
+                                    <label>Show Market Cap?</label>
+                                    <input
+                                        type="checkbox"
+                                        checked={marketCap}  // Bind the checkbox to tikckerSymbol state
+                                        onChange={() => setMarketCap(prev => !prev)} // Toggle the state value
+                                        className="w-1/2 h-1/2 border rounded-full"
+                                    />
+                                </div>
+
+                                <div className="flex">
+                                    <label>Show Volume (24h)?</label>
+                                    <input
+                                        type="checkbox"
+                                        checked={volume24}  // Bind the checkbox to tikckerSymbol state
+                                        onChange={() => setVolume24(prev => !prev)} // Toggle the state value
+                                        className="w-1/2 h-1/2 border rounded-full"
+                                    />
+                                </div>
+                        </div>
+
+                            <div className='col-md-6'>
+                                <h3 className='Widgettitles'>Widget Preview</h3>
                                 <div className='badgebox'>
                                     <p className='tokendiv'>
                                         <img src={tokenData.attributes.image_url || ''} alt="Token Logo" />
@@ -149,40 +183,25 @@ const TokenBadge = () => {
                                             </li>
                                         }
                                     </ul>
-                                    
-                                    <p>
+
+                                    <p className='decimalmain'>
                                         <span className='decimal'>Decimal : <b>{tokenData.attributes.decimals}</b></span>
                                         <span className='holders'>Holders : <b>{tokenData.holders.length}</b></span>
                                     </p>
                                     <p className='powerdby'>Powered by DeployTokens</p>
                                 </div>
-                                <div className="flex">
-                                    <label>Show Primary Ticker Symbol?</label>
-                                    <input
-                                        type="checkbox"
-                                        checked={tikckerSymbol}  // Bind the checkbox to tikckerSymbol state
-                                        onChange={() => setTickerSymbol(prev => !prev)} // Toggle the state value
-                                        className="w-1/2 h-1/2 border rounded-full"
-                                    />
-                                </div>
-                                <div className="flex">
-                                    <label>Show Market Cap?</label>
-                                    <input
-                                        type="checkbox"
-                                        checked={marketCap}  // Bind the checkbox to tikckerSymbol state
-                                        onChange={() => setMarketCap(prev => !prev)} // Toggle the state value
-                                        className="w-1/2 h-1/2 border rounded-full"
-                                    />
+
+                                <h3 className='Widgettitle'>Website Widget</h3>
+                                <div className='widgetbox'>
+                                        <div class="html">
+                                        <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://files.deploytokens.com/static/widget/currency.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"deploytokens-currency-widget"</span> <span class="hljs-attr">data-currencyid</span>=<span class="hljs-string">"1"</span> <span class="hljs-attr">data-base</span>=<span class="hljs-string">"USD"</span> <span class="hljs-attr">data-secondary</span>=<span class="hljs-string">""</span> <span class="hljs-attr">data-ticker</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-rank</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-marketcap</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-volume</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-statsticker</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-stats</span>=<span class="hljs-string">"USD"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                   </div>
                                 </div>
 
-                                <div className="flex">
-                                    <label>Show Volume (24h)?</label>
-                                    <input
-                                        type="checkbox"
-                                        checked={volume24}  // Bind the checkbox to tikckerSymbol state
-                                        onChange={() => setVolume24(prev => !prev)} // Toggle the state value
-                                        className="w-1/2 h-1/2 border rounded-full"
-                                    />
+
+                                <div className='widget'>
+                                <script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script><div class="coinmarketcap-currency-widget" data-currencyid="1" data-base="USD" data-secondary="" data-ticker="true" data-rank="true" data-marketcap="true" data-volume="true" data-statsticker="true" data-stats="USD"></div>
+
                                 </div>
 
                             </div>

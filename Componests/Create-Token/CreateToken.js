@@ -34,6 +34,31 @@ import blackListPause from "@/config/helper/ERC20/Standard/StandardTokenPauseBla
 import blackListMint from "@/config/helper/ERC20/Standard/StandardTokenMintBlacklist.sol/StandardToken.json";
 import blackList from "@/config/helper/ERC20/Standard/StandardTokenBlacklist.sol/StandardToken.json";
 
+// Tex
+import taxable from "@/config/helper/ERC20/Standard_old/StandardTokenTaxable.sol/StandardToken.json";
+import MintTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenMintTaxable.sol/StandardToken.json";
+import BlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBlacklistTaxable.sol/StandardToken.json";
+import PauseTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseTaxable.sol/StandardToken.json";
+import BurnTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnTaxable.sol/StandardToken.json";
+import MintCappedTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenMintCappedTaxable.sol/StandardToken.json";
+import MintBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenMintBlacklistTaxable.sol/StandardToken.json";
+import PauseMintTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintTaxable.sol/StandardToken.json";
+import PauseBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseBlacklistTaxable.sol/StandardToken.json";
+import PauseBurnTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseBurnTaxable.sol/StandardToken.json";
+import BurnMintTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnMintTaxable.sol/StandardToken.json";
+import BurnBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnBlacklistTaxable.sol/StandardToken.json";
+import PauseMintBurnCappedTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBurnCappedTaxable.sol/StandardToken.json";
+import PauseMintBurnCappedBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBurnCappedBlacklistTaxable.sol/StandardToken.json";
+import PauseMintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintCappedBlacklistTaxable.sol/StandardToken.json";
+import PauseMintCappedTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintCappedTaxable.sol/StandardToken.json";
+import MintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenMintCappedBlacklistTaxable.sol/StandardToken.json";
+import BurnMintBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnMintBlacklistTaxable.sol/StandardToken.json";
+import PauseBurnBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseBurnBlacklistTaxable.sol/StandardToken.json";
+import BurnMintCappedTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnMintCappedTaxable.sol/StandardToken.json";
+import BurnMintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnMintCappedBlacklistTaxable.sol/StandardToken.json";
+import PauseMintBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBlacklistTaxable.sol/StandardToken.json";
+import PauseMintBurnBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBurnBlacklistTaxable.sol/StandardToken.json";
+import PauseMintBurnTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBurnTaxable.sol/StandardToken.json";
 
 export default function CreateToken({ token }) {
     const router = useRouter();
@@ -237,7 +262,297 @@ export default function CreateToken({ token }) {
                 return bytecode.startsWith('0x') ? bytecode : bytecode;
             }
 
-            if (isCheckedBlacklist) {
+            if (isCheckedChargeTex) {
+
+                if (isCheckedMint && isCheckedBurn && isCheckedPausing && isCheckedCapped && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenPauseMintBurnCappedBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseMintBurnCappedBlacklistTaxable.abi,
+                        bytecode: getBytecode(PauseMintBurnCappedBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedMint && isCheckedBurn && isCheckedPausing && isCheckedCapped) {
+                    contractCode = 'StandardTokenPauseMintBurnCappedTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseMintBurnCappedTaxable.abi,
+                        bytecode: getBytecode(PauseMintBurnCappedTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedPausing && isCheckedMint && isCheckedCapped && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenPauseMintCappedBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseMintCappedBlacklistTaxable.abi,
+                        bytecode: getBytecode(PauseMintCappedBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedBurn && isCheckedMint && isCheckedCapped && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenBurnMintCappedBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: BurnMintCappedBlacklistTaxable.abi,
+                        bytecode: getBytecode(BurnMintCappedBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedPausing && isCheckedMint && isCheckedCapped && isCheckedChargeTex) {
+                    contractCode = 'StandardTokenPauseMintCappedTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseMintCappedTaxable.abi,
+                        bytecode: getBytecode(PauseMintCappedTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedPausing && isCheckedMint && isCheckedBurn && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenPauseMintBurnBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseMintBurnBlacklistTaxable.abi,
+                        bytecode: getBytecode(PauseMintBurnBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedMint && isCheckedCapped && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenMintCappedBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: MintCappedBlacklistTaxable.abi,
+                        bytecode: getBytecode(MintCappedBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedMint && isCheckedBurn && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenBurnMintBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: BurnMintBlacklistTaxable.abi,
+                        bytecode: getBytecode(BurnMintBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedPausing && isCheckedBurn && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenPauseBurnBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseBurnBlacklistTaxable.abi,
+                        bytecode: getBytecode(PauseBurnBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedBurn && isCheckedMint && isCheckedCapped) {
+                    contractCode = 'StandardTokenBurnMintCappedTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: BurnMintCappedTaxable.abi,
+                        bytecode: getBytecode(BurnMintCappedTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedPausing && isCheckedMint && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenPauseMintBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseMintBlacklistTaxable.abi,
+                        bytecode: getBytecode(PauseMintBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+                else if (isCheckedPausing && isCheckedMint && isCheckedBurn) {
+                    contractCode = 'StandardTokenPauseMintBurnTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseMintBurnTaxable.abi,
+                        bytecode: getBytecode(PauseMintBurnTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedMint && isCheckedBurn) {
+                    contractCode = 'StandardTokenBurnMintTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: BurnMintTaxable.abi,
+                        bytecode: getBytecode(BurnMintTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedBurn && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenBurnBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: BurnBlacklistTaxable.abi,
+                        bytecode: getBytecode(BurnBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedMint && isCheckedPausing) {
+                    contractCode = 'StandardTokenPauseMintTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseMintTaxable.abi,
+                        bytecode: getBytecode(PauseMintTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedPausing && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenPauseBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseBlacklistTaxable.abi,
+                        bytecode: getBytecode(PauseBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedPausing && isCheckedBurn) {
+                    contractCode = 'StandardTokenPauseBurnTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseBurnTaxable.abi,
+                        bytecode: getBytecode(PauseBurnTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedMint && isCheckedCapped) {
+                    contractCode = 'StandardTokenMintCappedTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: MintCappedTaxable.abi,
+                        bytecode: getBytecode(MintCappedTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedMint && isCheckedBlacklist) {
+                    contractCode = 'StandardTokenMintBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: MintBlacklistTaxable.abi,
+                        bytecode: getBytecode(MintBlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedBurn) {
+                    contractCode = 'StandardTokenBurnTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: BurnTaxable.abi,
+                        bytecode: getBytecode(BurnTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedPausing) {
+                    contractCode = 'StandardTokenPauseTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: PauseTaxable.abi,
+                        bytecode: getBytecode(PauseTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedMint) {
+                    contractCode = 'StandardTokenMintTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: MintTaxable.abi,
+                        bytecode: getBytecode(MintTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else if (isCheckedBlacklist) {
+                    contractCode = 'StandardTokenBlacklistTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: BlacklistTaxable.abi,
+                        bytecode: getBytecode(BlacklistTaxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+
+                else {
+                    contractCode = 'StandardTokenTaxable.sol';
+                    console.log(contractCode)
+                    args = [tokenName, tokenSymbol, Decimals, tokenInitial, feeAddress[chain.id], parseEther(fee.toString()), taxFeeReceive, taxFeeReceiverAddress];
+                    result = await deployContract(config, {
+                        abi: taxable.abi,
+                        bytecode: getBytecode(taxable.bytecode.object),
+                        args,
+                        value: parseEther(fee.toString()),
+                    });
+                }
+            }
+
+            else if (isCheckedBlacklist) {
                 if (isCheckedMint && isCheckedBurn && isCheckedPausing && isCheckedCapped) {
                     contractCode = 'StandardTokenPauseMintBurnCappedBlacklist.sol';
                     args = [tokenName, tokenSymbol, Decimals, tokenInitial, Capped, feeAddress[chain.id], parseEther(fee.toString())];
@@ -359,6 +674,7 @@ export default function CreateToken({ token }) {
                     });
                 }
             }
+
             else if (!isCheckedCapped) {
                 if (isCheckedMint && isCheckedBurn && isCheckedPausing) {
                     contractCode = contractCode + 'StandardTokenPauseMintBurn.sol'
@@ -481,6 +797,7 @@ export default function CreateToken({ token }) {
                     console.error('Failed to send data to the API');
                 }
             }
+
         } catch (error) {
             setIsLoading(false);
             console.log({ error });
@@ -495,7 +812,7 @@ export default function CreateToken({ token }) {
 
     useEffect(() => {
         if (hash) {
-            setIsPopupVisible(true);  // Show the popup automatically when transaction is done
+            setIsPopupVisible(true);
         }
     }, [hash]);
 
