@@ -35,30 +35,30 @@ import blackListMint from "@/config/helper/ERC20/Standard/StandardTokenMintBlack
 import blackList from "@/config/helper/ERC20/Standard/StandardTokenBlacklist.sol/StandardToken.json";
 
 // Tex
-import taxable from "@/config/helper/ERC20/Standard_old/StandardTokenTaxable.sol/StandardToken.json";
-import MintTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenMintTaxable.sol/StandardToken.json";
-import BlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBlacklistTaxable.sol/StandardToken.json";
-import PauseTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseTaxable.sol/StandardToken.json";
-import BurnTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnTaxable.sol/StandardToken.json";
-import MintCappedTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenMintCappedTaxable.sol/StandardToken.json";
-import MintBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenMintBlacklistTaxable.sol/StandardToken.json";
-import PauseMintTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintTaxable.sol/StandardToken.json";
-import PauseBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseBlacklistTaxable.sol/StandardToken.json";
-import PauseBurnTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseBurnTaxable.sol/StandardToken.json";
-import BurnMintTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnMintTaxable.sol/StandardToken.json";
-import BurnBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnBlacklistTaxable.sol/StandardToken.json";
-import PauseMintBurnCappedTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBurnCappedTaxable.sol/StandardToken.json";
-import PauseMintBurnCappedBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBurnCappedBlacklistTaxable.sol/StandardToken.json";
-import PauseMintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintCappedBlacklistTaxable.sol/StandardToken.json";
-import PauseMintCappedTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintCappedTaxable.sol/StandardToken.json";
-import MintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenMintCappedBlacklistTaxable.sol/StandardToken.json";
-import BurnMintBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnMintBlacklistTaxable.sol/StandardToken.json";
-import PauseBurnBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseBurnBlacklistTaxable.sol/StandardToken.json";
-import BurnMintCappedTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnMintCappedTaxable.sol/StandardToken.json";
-import BurnMintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenBurnMintCappedBlacklistTaxable.sol/StandardToken.json";
-import PauseMintBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBlacklistTaxable.sol/StandardToken.json";
-import PauseMintBurnBlacklistTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBurnBlacklistTaxable.sol/StandardToken.json";
-import PauseMintBurnTaxable from "@/config/helper/ERC20/Standard_old/StandardTokenPauseMintBurnTaxable.sol/StandardToken.json";
+import taxable from "@/config/helper/ERC20/Standard/StandardTokenTaxable.sol/StandardToken.json";
+import MintTaxable from "@/config/helper/ERC20/Standard/StandardTokenMintTaxable.sol/StandardToken.json";
+import BlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenBlacklistTaxable.sol/StandardToken.json";
+import PauseTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseTaxable.sol/StandardToken.json";
+import BurnTaxable from "@/config/helper/ERC20/Standard/StandardTokenBurnTaxable.sol/StandardToken.json";
+import MintCappedTaxable from "@/config/helper/ERC20/Standard/StandardTokenMintCappedTaxable.sol/StandardToken.json";
+import MintBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenMintBlacklistTaxable.sol/StandardToken.json";
+import PauseMintTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseMintTaxable.sol/StandardToken.json";
+import PauseBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseBlacklistTaxable.sol/StandardToken.json";
+import PauseBurnTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseBurnTaxable.sol/StandardToken.json";
+import BurnMintTaxable from "@/config/helper/ERC20/Standard/StandardTokenBurnMintTaxable.sol/StandardToken.json";
+import BurnBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenBurnBlacklistTaxable.sol/StandardToken.json";
+import PauseMintBurnCappedTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseMintBurnCappedTaxable.sol/StandardToken.json";
+import PauseMintBurnCappedBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseMintBurnCappedBlacklistTaxable.sol/StandardToken.json";
+import PauseMintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseMintCappedBlacklistTaxable.sol/StandardToken.json";
+import PauseMintCappedTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseMintCappedTaxable.sol/StandardToken.json";
+import MintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenMintCappedBlacklistTaxable.sol/StandardToken.json";
+import BurnMintBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenBurnMintBlacklistTaxable.sol/StandardToken.json";
+import PauseBurnBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseBurnBlacklistTaxable.sol/StandardToken.json";
+import BurnMintCappedTaxable from "@/config/helper/ERC20/Standard/StandardTokenBurnMintCappedTaxable.sol/StandardToken.json";
+import BurnMintCappedBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenBurnMintCappedBlacklistTaxable.sol/StandardToken.json";
+import PauseMintBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseMintBlacklistTaxable.sol/StandardToken.json";
+import PauseMintBurnBlacklistTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseMintBurnBlacklistTaxable.sol/StandardToken.json";
+import PauseMintBurnTaxable from "@/config/helper/ERC20/Standard/StandardTokenPauseMintBurnTaxable.sol/StandardToken.json";
 
 export default function CreateToken({ token }) {
     const router = useRouter();
@@ -812,7 +812,7 @@ export default function CreateToken({ token }) {
 
     useEffect(() => {
         if (hash) {
-            setIsPopupVisible(true);
+            setIsPopupVisible(true);  
         }
     }, [hash]);
 
