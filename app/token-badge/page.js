@@ -19,7 +19,7 @@ const TokenBadge = () => {
         { "id": "linea", "name": "Linea" }
     ];
     const [network, setNetwork] = useState("bsc");
-    const [address, setAddress] = useState("0x2170Ed0880ac9A755fd29B2688956BD959F933F8");
+    const [address, setAddress] = useState("0x55d398326f99059ff775485246999027b3197955");
     const [isValid, setIsValid] = useState(true);
     const [tokenData, setTokenData] = useState(null);
     const [tikckerSymbol, setTickerSymbol] = useState(true);  // Default to true (checked)
@@ -73,16 +73,12 @@ const TokenBadge = () => {
     const formatCurrency = (amount) => {
         const num = parseFloat(amount);
         if (num >= 1e12) {
-            // Trillion (T)
             return `$${(num / 1e12).toFixed(2)} T USD`;
         } else if (num >= 1e9) {
-            // Billion (B)
             return `$${(num / 1e9).toFixed(2)} B USD`;
         } else if (num >= 1e6) {
-            // Million (M)
             return `$${(num / 1e6).toFixed(2)} M USD`;
         } else {
-            // For numbers less than 1 million, keep it in regular format
             return `$${num.toLocaleString()} USD`;
         }
     };
@@ -120,55 +116,41 @@ const TokenBadge = () => {
                 {tokenData && (
                     <div className='container badgeboxdiv'>
                         <div className='row'>
-
-                        <div className='col-md-6 ticker'>
-
-                               <div className="flex">
+                            <div className='col-md-6 ticker'>
+                                <h3 className='Widgettitles'>Coin Ticker Widget</h3>
+                                <div className="flex">
                                     <label>Show Primary Ticker Symbol?</label>
-                                    <input
-                                        type="checkbox"
-                                        checked={tikckerSymbol}  // Bind the checkbox to tikckerSymbol state
-                                        onChange={() => setTickerSymbol(prev => !prev)} // Toggle the state value
-                                        className="w-1/2 h-1/2 border rounded-full"
-                                    />
+                                    <input type="checkbox" checked={tikckerSymbol} onChange={() => setTickerSymbol(prev => !prev)} className="w-1/2 h-1/2  border rounded-full" />
                                 </div>
                                 <div className="flex">
                                     <label>Show Market Cap?</label>
-                                    <input
-                                        type="checkbox"
-                                        checked={marketCap}  // Bind the checkbox to tikckerSymbol state
-                                        onChange={() => setMarketCap(prev => !prev)} // Toggle the state value
-                                        className="w-1/2 h-1/2 border rounded-full"
-                                    />
+                                    <input type="checkbox" checked={marketCap} onChange={() => setMarketCap(prev => !prev)} className="w-1/2 h-1/2 border rounded-full"/>
                                 </div>
 
                                 <div className="flex">
                                     <label>Show Volume (24h)?</label>
-                                    <input
-                                        type="checkbox"
-                                        checked={volume24}  // Bind the checkbox to tikckerSymbol state
-                                        onChange={() => setVolume24(prev => !prev)} // Toggle the state value
-                                        className="w-1/2 h-1/2 border rounded-full"
+                                    <input type="checkbox" checked={volume24} onChange={() => setVolume24(prev => !prev)} className="w-1/2 h-1/2 border rounded-full"
                                     />
                                 </div>
-                        </div>
+                            </div>
 
                             <div className='col-md-6'>
                                 <h3 className='Widgettitles'>Widget Preview</h3>
                                 <div className='badgebox'>
                                     <p className='tokendiv'>
-                                        <img src={tokenData.attributes.image_url || ''} alt="Token Logo" />
+                                        {tokenData.attributes.image_url && <img src={tokenData.attributes.image_url} alt="Token Logo" />}
                                         <span className='tokenname'>{tokenData.attributes.name}</span>
-                                        {tikckerSymbol && <span className='tokennamesymbl'>({tokenData.attributes.symbol})</span>}<br />
+                                        {tikckerSymbol && <span className='tokennamesymbl'>({tokenData.attributes.symbol})</span>}
+                                        <br />
                                         <span className='price'>
-                                            {tokenData.attributes.price_usd} <strong>USD</strong>
+                                            {parseFloat(tokenData.attributes.price_usd).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <strong>USD</strong>
                                             <b>({((tokenData.attributes.volume_usd.h24 / tokenData.attributes.market_cap_usd) * 100).toFixed(2)}%)</b>
                                         </span>
                                     </p>
                                     <ul>
                                         <li>
                                             <h4>Total Supply</h4>
-                                            <span>{(parseFloat(tokenData.attributes.total_supply) / 1e18).toFixed(2)}</span>
+                                            <span>{parseFloat(tokenData.attributes.total_supply / 1e18).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                         </li>
                                         {marketCap &&
                                             <li>
@@ -193,23 +175,73 @@ const TokenBadge = () => {
 
                                 <h3 className='Widgettitle'>Website Widget</h3>
                                 <div className='widgetbox'>
-                                        <div class="html">
-                                        <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://files.deploytokens.com/static/widget/currency.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"deploytokens-currency-widget"</span> <span class="hljs-attr">data-currencyid</span>=<span class="hljs-string">"1"</span> <span class="hljs-attr">data-base</span>=<span class="hljs-string">"USD"</span> <span class="hljs-attr">data-secondary</span>=<span class="hljs-string">""</span> <span class="hljs-attr">data-ticker</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-rank</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-marketcap</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-volume</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-statsticker</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-stats</span>=<span class="hljs-string">"USD"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-                                   </div>
+                                    <div className="html">
+                                        <span className="hljs-tag">&lt;
+                                            <span className="hljs-name">script</span>
+                                            <span className="hljs-attr"> type</span>
+                                            =
+                                            <span className="hljs-string">"text/javascript"</span>
+                                            <span className="hljs-attr"> src</span>
+                                            =
+                                            <span className="hljs-string">"https://files.deploytokens.com/static/widget/currency.js"</span>
+                                            &gt;
+                                        </span>
+                                        <span className="hljs-tag">
+                                            &lt;/
+                                            <span className="hljs-name">script</span>
+                                            &gt;
+                                        </span>
+                                        <span className="hljs-tag">
+                                            &lt;
+                                            <span className="hljs-name">div</span>
+                                            <span className="hljs-attr"> class</span>
+                                            =
+                                            <span className="hljs-string">"deploytokens-currency-widget"</span>
+                                            <span className="hljs-attr"> data-currencyid</span>
+                                            =
+                                            <span className="hljs-string">"1"</span>
+                                            <span className="hljs-attr"> data-base</span>
+                                            =
+                                            <span className="hljs-string">"USD"</span>
+                                            <span className="hljs-attr"> data-secondary</span>
+                                            =
+                                            <span className="hljs-string">
+                                                ""
+                                            </span>
+                                            <span className="hljs-attr"> data-ticker</span>
+                                            =
+                                            <span className="hljs-string">
+                                                "{tikckerSymbol.toString()}"
+                                            </span>
+                                            <span className="hljs-attr"> data-marketcap</span>
+                                            =
+                                            <span className="hljs-string">{marketCap.toString()}</span>
+                                            <span className="hljs-attr"> data-volume</span>
+                                            =
+                                            <span className="hljs-string">"{volume24.toString()}"</span>
+                                            <span className="hljs-attr">data-statsticker</span>
+                                            =
+                                            <span className="hljs-string">"true"</span>
+                                            &gt;</span>
+                                        <span className="hljs-tag">
+                                            &lt;/
+                                            <span className="hljs-name">div</span>
+                                            &gt;
+                                        </span>
+                                    </div>
                                 </div>
-
 
                                 <div className='widget'>
-                                <script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script><div class="coinmarketcap-currency-widget" data-currencyid="1" data-base="USD" data-secondary="" data-ticker="true" data-rank="true" data-marketcap="true" data-volume="true" data-statsticker="true" data-stats="USD"></div>
-
+                                    <script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script>
+                                    <div className="coinmarketcap-currency-widget" data-currencyid="1" data-base="USD"
+                                        data-secondary="" data-ticker="true" data-rank="true" data-marketcap="true"
+                                        data-volume="true" data-statsticker="true" data-stats="USD">
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 )}
-
-
             </div>
         </>
     );

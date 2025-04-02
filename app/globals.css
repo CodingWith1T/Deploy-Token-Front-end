@@ -13518,3 +13518,13 @@ thead{background: #e0f1ff;}
 .widgetbox .html{font-size: 14px;}
 .widgetbox .hljs-string{color: rgb(57, 97, 251);}
 .widgetbox .hljs-attr{color: rgb(234, 57, 67);}
+
+.tag {
+  color: black;
+}
+.attribute {
+  color: red;
+}
+.value {
+  color: blue;
+}

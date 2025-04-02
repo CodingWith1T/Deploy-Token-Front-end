@@ -67,6 +67,15 @@ export default function Sidebar() {
     </li>
 
     <li className="menu-item">
+      <Link href="/token-badge">
+      <span className="icon">
+      <i className="fa fa-certificate"></i>
+      </span>
+      <span className="label">Token Badge</span>
+      </Link>
+    </li>
+
+    <li className="menu-item">
       <Link href="/tools/multi-chain-balance-checker">
       <span className="icon">
       <i className="fa fa-check-circle"></i>

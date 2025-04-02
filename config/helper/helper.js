@@ -22,8 +22,8 @@ export const creationFee = {
     '2741': 0.025, // Abstract (ETH)
     '59144': 0.025, // Linea
 
-    '11155111': 0.001, // Sepolia
-    '97': 0.001, // BNB Chain Testnet
+    '11155111': 0.025, // Sepolia
+    '97': 0.080, // BNB Chain Testnet
 };
 
 
@@ -76,8 +76,8 @@ export const utilitiesFee = {
     '59144': 0.0027, // Linea
     '130': 0.0027, // UniChain
 
-    '11155111': 0.0003, // Sepolia
-    '97': 0.00040, // BNB Chain Testnet
+    '11155111': 0.0027, // Sepolia
+    '97': 0.0089, // BNB Chain Testnet
 };
 
 
